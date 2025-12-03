@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ironlog-boot
+  config:
+    import: 'classpath:credentials.yaml'
+    profiles:
+      default: dev
+      active: dev
+  server:
+    port: ${PORT}
