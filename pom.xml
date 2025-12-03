@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.ironcorelabs.ironlog</groupId>
+	<groupId>dev.ironcorelabs.ironlog</groupId>
 	<artifactId>ironlog-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ironlog-app</name>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ironcorelabs.ironlog</groupId>
+        <groupId>dev.ironcorelabs.ironlog</groupId>
         <artifactId>ironlog-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>

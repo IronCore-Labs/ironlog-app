@@ -1,4 +1,4 @@
-package com.ironcorelabs.ironlog.boot;
+package dev.ironcorelabs.ironlog.boot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
