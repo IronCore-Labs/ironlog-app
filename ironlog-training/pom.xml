@@ -18,6 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ironlog-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ironlog-security</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -1,0 +1,446 @@
+openapi: 3.1.0
+x-stoplight:
+  id: n3pz6ivmjr961
+info:
+  title: Iron Log APÍ
+  version: '1.0'
+servers:
+  - url: /api/v1
+paths:
+  /auth/register:
+    post:
+      summary: Register User
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: registerUser
+      x-stoplight:
+        id: y8nuvzmnq8srx
+      requestBody:
+        $ref: '#/components/requestBodies/UserRegisterRequest'
+  /auth/login:
+    post:
+      summary: Login
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: loginUser
+      x-stoplight:
+        id: oux50m0dq7eww
+      description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequest'
+  /auth/refresh:
+    post:
+      summary: Refresh
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: refreshUser
+      x-stoplight:
+        id: lj3n7748zo7nd
+      requestBody:
+        $ref: '#/components/requestBodies/RefreshRequest'
+  /users/me:
+    get:
+      summary: Get Current User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getCurrentUser
+      x-stoplight:
+        id: iqp9ec3avebrb
+  '/users/{id}':
+    get:
+      summary: Get User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getUserById
+      x-stoplight:
+        id: 90bnypcxbbm5p
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    put:
+      summary: Update User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: updateUser
+      x-stoplight:
+        id: 08itmlet345ts
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
+    delete:
+      summary: Delete User
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: deleteUser
+      x-stoplight:
+        id: frff899s40mkq
+  /users:
+    get:
+      summary: List Users
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getUsers
+      x-stoplight:
+        id: gdcavbrpj7e88
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+        - schema:
+            type: integer
+            default: 25
+          in: query
+          name: size
+        - schema:
+            type: string
+            default: id
+          in: query
+          name: sort
+    post:
+      summary: Create User
+      tags:
+        - users
+      responses:
+        '201':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: createUser
+      x-stoplight:
+        id: mwnmvbr35oyxl
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserRequest'
+  /auth/logout:
+    post:
+      summary: Logout
+      tags:
+        - auth
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: logout
+      x-stoplight:
+        id: cw1tyfij5v5i7
+      requestBody:
+        $ref: '#/components/requestBodies/RefreshRequest'
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      examples:
+        - id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      required:
+        - id
+        - name
+        - email
+        - role
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          enum:
+            - ADMIN
+            - CLIENT
+            - TRAINER
+    UserList:
+      title: UserList
+      type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalElements
+        - totalPages
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+  requestBodies:
+    UserRegisterRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+              - password
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+    LoginRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+    RefreshRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - refreshToken
+            properties:
+              refreshToken:
+                type: string
+    UpdateUserRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+              - password
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+    CreateUserRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+              - password
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              role:
+                enum:
+                  - ADMIN
+                  - TRAINER
+                  - CLIENT
+  responses:
+    UserResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    LoginResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - token
+              - refreshToken
+            properties:
+              email:
+                type: string
+              token:
+                type: string
+              refreshToken:
+                type: string
+    UserListResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserList'
+tags:
+  - name: auth
+    description: 'User authentication and token management operations (Login, Register, Refresh).'
+  - name: users
+    description: User profile and administration (CRUD operations on users).

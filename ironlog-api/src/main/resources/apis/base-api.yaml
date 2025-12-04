@@ -1,0 +1,28 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 2moyvqjgiymqu
+info:
+  title: base-api
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths: {}
+components:
+  schemas:
+    Error:
+      title: Error
+      type: object
+      required:
+        - message
+        - statusCode
+        - status
+        - url
+      properties:
+        message:
+          type: string
+        statusCode:
+          type: integer
+        status:
+          type: string
+        url:
+          type: string
