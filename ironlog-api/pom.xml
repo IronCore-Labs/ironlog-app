@@ -8,7 +8,6 @@
         <groupId>dev.ironcorelabs.ironlog</groupId>
         <artifactId>ironlog-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ironlog-api</artifactId>
@@ -16,6 +15,10 @@
     <name>${project.groupId}:${project.artifactId}</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -41,6 +44,62 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.10.0</version>
+                <executions>
+                    <execution>
+                        <id>base-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/apis/base-api.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>dev.ironcorelabs.ironlog.restapi.openapi.api</apiPackage>
+                            <modelPackage>dev.ironcorelabs.ironlog.restapi.openapi.model</modelPackage>
+                            <skipOverwrite>true</skipOverwrite>
+                            <configOptions>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>security</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/apis/ironlog-security/api-spec.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>dev.ironcorelabs.ironlog.restapi.openapi.api</apiPackage>
+                            <modelPackage>dev.ironcorelabs.ironlog.restapi.openapi.model</modelPackage>
+                            <skipOverwrite>true</skipOverwrite>
+                            <configOptions>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -12,7 +12,6 @@
 	<groupId>dev.ironcorelabs.ironlog</groupId>
 	<artifactId>ironlog-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ironlog-app</name>
 	<packaging>pom</packaging>
 
 	<modules>
