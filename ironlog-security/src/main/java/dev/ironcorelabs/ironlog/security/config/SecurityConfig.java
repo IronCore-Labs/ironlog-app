@@ -28,6 +28,13 @@ import java.util.List;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
+    private final JWTFilter filter;
+    private final UserDetailsService userService;
+
+    private final List<String> allowedOrigins;
+    private final List<String> allowedHeaders;
+    private final List<String> allowedMethods;
+
     public SecurityConfig(JWTFilter filter, UserDetailsService userService
                     , @Value("${ironlog.security.cors.allowed-origins:*}") List<String> allowedOrigins
                     , @Value("${ironlog.security.cors.allowed-headers:*}") List<String> allowedHeaders
@@ -78,7 +85,9 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(httpConfigure -> httpConfigure.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/auth/**")
+                    authorize.requestMatchers("/auth/logout")
+                            .authenticated()
+                            .requestMatchers("/auth/**")
                             .permitAll()
                             .anyRequest()
                             .authenticated();
@@ -87,11 +96,4 @@ public class SecurityConfig {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-    private final JWTFilter filter;
-    private final UserDetailsService userService;
-
-    private final List<String> allowedOrigins;
-    private final List<String> allowedHeaders;
-    private final List<String> allowedMethods;
 }

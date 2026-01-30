@@ -8,13 +8,13 @@ import dev.ironcorelabs.ironlog.security.dto.UserDetailsCustom;
 import dev.ironcorelabs.ironlog.security.exception.InvalidToken;
 import dev.ironcorelabs.ironlog.security.service.AuthService;
 import dev.ironcorelabs.ironlog.security.service.RefreshTokenService;
+import dev.ironcorelabs.ironlog.security.service.transactional.SecurityTransactionWrapper;
 import dev.ironcorelabs.ironlog.security.util.JWTUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final SecurityUtils securityUtils;
+    private final SecurityTransactionWrapper transactionWrapper;
 
     @Override
     @Transactional
@@ -99,13 +100,15 @@ public class AuthServiceImpl implements AuthService {
 
         if (!StringUtils.hasText(userName))
         {
+            transactionWrapper.revokeForce(jti);
             throw new InvalidToken("invalid.token");
         }
 
         final UserDetailsCustom userDetails = (UserDetailsCustom) userDetailsService.loadUserByUsername(userName);
 
-        if (!jwtUtil.isValidUserName(userDetails, claims))
+        if (!jwtUtil.isValid(userDetails, claims))
         {
+            transactionWrapper.revokeForce(jti);
             throw new InvalidToken("invalid.token");
         }
 
