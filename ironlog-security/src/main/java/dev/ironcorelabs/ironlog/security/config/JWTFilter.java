@@ -9,7 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,17 +18,27 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @Component
-@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final UserDetailsService userService;
     private final RefreshTokenService refreshTokenService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    public JWTFilter(JWTUtil jwtUtil, UserDetailsService userService
+            , RefreshTokenService refreshTokenService
+            , @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver) {
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
+        this.refreshTokenService = refreshTokenService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
 
     protected UsernamePasswordAuthenticationToken authenticate(HttpServletRequest request) {
 
@@ -79,8 +89,7 @@ public class JWTFilter extends OncePerRequestFilter {
         return authentication;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    private void filter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final UsernamePasswordAuthenticationToken authentication = authenticate(request);
 
         if (authentication != null)
@@ -89,5 +98,14 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            filter(request, response, filterChain);
+        } catch(Exception exception) {
+            handlerExceptionResolver.resolveException(request, response, null, exception);
+        }
     }
 }

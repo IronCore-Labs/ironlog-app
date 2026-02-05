@@ -3,10 +3,13 @@ package dev.ironcorelabs.ironlog.security.service;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
     User findById(Long id);
+
+    User findByExternalId(UUID externalId);
 
     User findByEmail(String email);
 
@@ -16,7 +19,11 @@ public interface UserService {
 
     void delete(Long id);
 
+    void deleteByExternalId(UUID externalId);
+
     User update(Long id, UpdateUserRequest request);
+
+    User updateByExternalId(UUID id, UpdateUserRequest request);
 
     List<User> findAll();
 

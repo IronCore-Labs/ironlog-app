@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return mapper.toDto(repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found")));
+    }
+
+    @Override
+    public User findByExternalId(UUID externalId) {
+        return mapper.toDto(repository.findByExternalId(externalId)
                 .orElseThrow(() -> new RecordNotFoundException("not.found")));
     }
 
@@ -71,11 +78,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void deleteByExternalId(UUID externalId) {
+        repository.findByExternalId(externalId)
+            .map(user -> {
+                repository.delete(user);
+                return true;
+            }).orElseThrow(() -> new RecordNotFoundException("not.found"));
+    }
+
+    @Override
+    @Transactional
     public User update(Long id, UpdateUserRequest request) {
 
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
+        return update(user, request);
+    }
+
+    @Override
+    @Transactional
+    public User updateByExternalId(UUID id, UpdateUserRequest request) {
+
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        return update(user, request);
+    }
+
+    private User update(AppUser user, UpdateUserRequest request) {
         mapper.updateEntity(request, user);
 
         return mapper.toDto(repository.save(user));

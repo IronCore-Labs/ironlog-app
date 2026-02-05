@@ -125,8 +125,8 @@ paths:
         id: 90bnypcxbbm5p
     parameters:
       - schema:
-          type: integer
-          format: int64
+          type: string
+          format: uuid
         name: id
         in: path
         required: true

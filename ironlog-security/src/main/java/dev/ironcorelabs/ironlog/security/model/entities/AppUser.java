@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -34,6 +35,9 @@ public class AppUser {
 
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
+
+    @Column(name = "external_id", unique = true, nullable = false)
+    private UUID externalId = UUID.randomUUID();
 
     @OneToMany(mappedBy = "user")
     private List<RefreshToken> refreshTokens;

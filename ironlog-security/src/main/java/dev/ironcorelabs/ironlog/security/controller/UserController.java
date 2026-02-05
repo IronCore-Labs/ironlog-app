@@ -6,9 +6,8 @@ import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.NativeWebRequest;
 
-import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class UserController implements UsersApi {
@@ -27,8 +26,8 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(Long id, UpdateUserRequest request) {
-        return ResponseEntity.ok(service.update(id, request));
+    public ResponseEntity<User> updateUser(UUID id, UpdateUserRequest request) {
+        return ResponseEntity.ok(service.updateByExternalId(id, request));
     }
 
     @Override
@@ -37,8 +36,8 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> getUserById(Long id) {
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<User> getUserById(UUID id) {
+        return ResponseEntity.ok(service.findByExternalId(id));
     }
 
     @Override
@@ -47,8 +46,8 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUser(Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> deleteUser(UUID id) {
+        service.deleteByExternalId(id);
         return ResponseEntity.noContent().build();
     }
 
