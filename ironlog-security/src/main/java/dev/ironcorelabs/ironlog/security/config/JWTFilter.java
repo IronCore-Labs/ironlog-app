@@ -46,7 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (!StringUtils.hasText(token))
         {
-            throw new AbsentTokenException("absent.token");
+            return null;
         }
 
         final Claims claims = jwtUtil.getClaims(token);

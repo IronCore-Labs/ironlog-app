@@ -46,5 +46,5 @@ public abstract class BaseBusinessException extends RuntimeException {
 
     public abstract int getHttpStatusCode();
 
-    private List<Object> params;
+    private List<Object> params = new ArrayList<>();
 }

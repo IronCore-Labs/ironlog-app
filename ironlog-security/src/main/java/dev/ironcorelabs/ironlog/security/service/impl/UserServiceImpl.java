@@ -1,6 +1,7 @@
 package dev.ironcorelabs.ironlog.security.service.impl;
 
 import dev.ironcorelabs.ironlog.core.exception.RecordNotFoundException;
+import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.exception.BadCredentialsException;
 import dev.ironcorelabs.ironlog.security.mapper.UserMapper;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
+    private final SecurityUtils securityUtils;
 
     @Override
     public User findById(Long id) {
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
         final AppUser user = mapper.toEntity(request);
         user.setPassword(encoder.encode(request.getPassword()));
         user.setRole(UserRole.ROLE_CLIENT);
+        user.setEnabled(Boolean.TRUE);
 
         return mapper.toDto(repository.save(user));
     }
@@ -69,21 +72,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Long id) {
-        repository.findById(id)
-            .map(user -> {
-                repository.delete(user);
-                return true;
-            }).orElseThrow(() -> new RecordNotFoundException("not.found"));
+        final AppUser user = repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        repository.delete(user);
     }
 
     @Override
     @Transactional
     public void deleteByExternalId(UUID externalId) {
-        repository.findByExternalId(externalId)
-            .map(user -> {
-                repository.delete(user);
-                return true;
-            }).orElseThrow(() -> new RecordNotFoundException("not.found"));
+        final AppUser user = repository.findByExternalId(externalId)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        repository.delete(user);
     }
 
     @Override
@@ -154,5 +155,11 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
 
         refreshTokenService.revokeAllSessions(user.getId());
+    }
+
+    private boolean validate(Long userId, boolean validateId) {
+        final Long currentUserId = securityUtils.getCurrentUserId();
+
+        return false;
     }
 }

@@ -1,6 +1,8 @@
 spring:
   config:
-    import: 'classpath:credentials.yaml'
+    import:
+      - 'classpath:credentials.yaml'
+      - 'optional:classpath:permissions/'
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}

@@ -77,23 +77,6 @@ paths:
         id: lj3n7748zo7nd
       requestBody:
         $ref: '#/components/requestBodies/RefreshRequest'
-  /users/me:
-    get:
-      summary: Get Current User
-      tags:
-        - users
-      responses:
-        '200':
-          $ref: '#/components/responses/UserResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
-      operationId: getCurrentUser
-      x-stoplight:
-        id: iqp9ec3avebrb
   '/users/{id}':
     get:
       summary: Get User
@@ -130,13 +113,19 @@ paths:
         name: id
         in: path
         required: true
-    put:
+    patch:
       summary: Update User
       tags:
         - users
       responses:
         '200':
           $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
         '401':
           description: Unauthorized
           content:
@@ -188,6 +177,63 @@ paths:
       operationId: deleteUser
       x-stoplight:
         id: frff899s40mkq
+  /users/me:
+    get:
+      summary: Get Current User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getCurrentUser
+      x-stoplight:
+        id: iqp9ec3avebrb
+    patch:
+      summary: Update Current User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: lilzla89l003t
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: otggpzlnje5io
+      operationId: updateMyProfile
+      x-stoplight:
+        id: dczy3cwg6mocy
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
   /users:
     get:
       summary: List Users
@@ -455,15 +501,12 @@ components:
             required:
               - fullName
               - email
-              - password
             properties:
               fullName:
                 type: string
                 x-stoplight:
                   id: 1twlnkez8xnj9
               email:
-                type: string
-              password:
                 type: string
     CreateUserRequest:
       content:

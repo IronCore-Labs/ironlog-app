@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void logout(String refreshToken) {
-        final Long currentUser = securityUtils.getCurrentUser();
+        final Long currentUser = securityUtils.getCurrentUserId();
 
         final Claims claims = jwtUtil.getClaims(refreshToken);
 

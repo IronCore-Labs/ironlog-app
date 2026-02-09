@@ -13,12 +13,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(schema = "security", name = "user", indexes = {@Index(columnList = "enabled")})
+@Table(schema = "sec", name = "app_user", indexes = {@Index(columnList = "enabled")})
 public class AppUser {
 
     @Id
     @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_gen", schema = "security", sequenceName = "user_seq")
+    @SequenceGenerator(name = "user_gen", schema = "sec", sequenceName = "user_seq")
     private Long id;
 
     @Column(name = "full_name", nullable = false)

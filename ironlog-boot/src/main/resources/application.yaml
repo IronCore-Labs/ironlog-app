@@ -2,7 +2,9 @@ spring:
   application:
     name: ironlog-boot
   config:
-    import: 'classpath:credentials.yaml'
+    import:
+      - 'classpath:credentials.yaml'
+      - 'optional:classpath:permissions/'
   profiles:
     default: dev
     active: dev

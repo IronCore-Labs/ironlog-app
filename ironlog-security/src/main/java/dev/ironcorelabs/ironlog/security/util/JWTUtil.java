@@ -1,11 +1,11 @@
 package dev.ironcorelabs.ironlog.security.util;
 
+import dev.ironcorelabs.ironlog.core.exception.UnauthorizedException;
 import dev.ironcorelabs.ironlog.security.config.TokenProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -57,7 +57,21 @@ public class JWTUtil {
         return generateToken(user, jti, expirationRefresh * 60 * 60 * 1000);
     }
 
-    public Claims getClaims(String token) {
+    public Claims getClaims(String token) throws UnauthorizedException {
+        try {
+            return getBaseClaims(token);
+        } catch(ExpiredJwtException e) {
+            throw new UnauthorizedException("invalid.token");
+        } catch(SignatureException e) {
+            throw new UnauthorizedException("invalid.token");
+        } catch(MalformedJwtException e) {
+            throw new UnauthorizedException("invalid.token");
+        } catch(UnsupportedJwtException e) {
+            throw new UnauthorizedException("invalid.token");
+        }
+    }
+
+    private Claims getBaseClaims(String token) {
         if (!StringUtils.hasText(token))
         {
             return null;
@@ -72,9 +86,15 @@ public class JWTUtil {
 
     public Claims getClaimsIgnoredExpired(String token) {
         try {
-            return getClaims(token);
+            return getBaseClaims(token);
         } catch(ExpiredJwtException e) {
             return e.getClaims();
+        } catch(SignatureException e) {
+            throw new UnauthorizedException("invalid.token");
+        } catch(MalformedJwtException e) {
+            throw new UnauthorizedException("invalid.token");
+        } catch(UnsupportedJwtException e) {
+            throw new UnauthorizedException("invalid.token");
         }
     }
 

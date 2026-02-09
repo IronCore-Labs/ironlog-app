@@ -1,6 +1,7 @@
 package dev.ironcorelabs.ironlog.security.mapper;
 
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
+import dev.ironcorelabs.ironlog.security.dto.CustomGrantedAuthority;
 import dev.ironcorelabs.ironlog.security.dto.UserDetailsCustom;
 import dev.ironcorelabs.ironlog.security.model.entities.AppUser;
 import dev.ironcorelabs.ironlog.security.model.enums.UserRole;
@@ -20,6 +21,10 @@ public interface UserMapper {
     @Mapping(source = "email", target = "username")
     @Mapping(target = "authorities", ignore = true)
     UserDetailsCustom toUserDetail(AppUser user);
+
+    default List<CustomGrantedAuthority> toAuthorities(List<String> permissions) {
+        return permissions.stream().map(CustomGrantedAuthority::new).toList();
+    }
 
     User toDto(AppUser user);
 

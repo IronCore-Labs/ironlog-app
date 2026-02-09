@@ -12,13 +12,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(schema = "security")
+@Table(schema = "sec", name = "refresh_token")
 public class RefreshToken {
 
     @Id
     @GeneratedValue(generator = "refresh_token_gen", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "refresh_token_gen", sequenceName = "refresh_token_seq"
-            , schema = "security", allocationSize = 1)
+            , schema = "sec", allocationSize = 1)
     private Long id;
 
     @Column(name = "token", nullable = false, columnDefinition = "TEXT")

@@ -1,13 +1,8 @@
 package dev.ironcorelabs.ironlog.core.exception;
 
 import dev.ironcorelabs.ironlog.restapi.openapi.model.Error;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -31,23 +26,6 @@ public class GlobalExceptionHandler {
         return buildResponse(status, ex.getLocalizedMessage(), ex.getParams(), request.getRequestURI());
     }
 
-    @ExceptionHandler({
-            ExpiredJwtException.class
-            , SignatureException.class
-            , MalformedJwtException.class
-            , UnsupportedJwtException.class
-    })
-    public ResponseEntity<Error> handeJWTException(Exception ex, HttpServletRequest request) {
-        String message = "invalid.token";
-
-        if (ex instanceof ExpiredJwtException)
-        {
-            message = "expired.token";
-        }
-
-        return buildResponse(HttpStatus.UNAUTHORIZED, message, List.of(), request.getRequestURI());
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Error> handleException(Exception ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "internal.server.error", List.of(), request.getRequestURI());
@@ -59,7 +37,7 @@ public class GlobalExceptionHandler {
         final String translated = messageSource.getMessage(message, params.toArray()
                 , LocaleContextHolder.getLocale());
 
-        Error errorResponse = new Error()
+        final Error errorResponse = new Error()
                 .message(translated)
                 .url(url)
                 .statusCode(status.value())

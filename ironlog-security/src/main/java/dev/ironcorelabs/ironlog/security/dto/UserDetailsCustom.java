@@ -18,5 +18,5 @@ public class UserDetailsCustom implements UserDetails, AuthenticateUser {
     private String password;
     private Long id;
 
-    private List<GrantedAuthority> authorities;
+    private List<? extends GrantedAuthority> authorities;
 }
