@@ -1,0 +1,603 @@
+openapi: 3.0.3
+x-stoplight:
+  id: n3pz6ivmjr961
+info:
+  title: Iron Log APÍ
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /auth/register:
+    post:
+      summary: Register User
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: registerUser
+      x-stoplight:
+        id: y8nuvzmnq8srx
+      requestBody:
+        $ref: '#/components/requestBodies/UserRegisterRequest'
+  /auth/login:
+    post:
+      summary: Login
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: loginUser
+      x-stoplight:
+        id: oux50m0dq7eww
+      description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequest'
+  /auth/refresh:
+    post:
+      summary: Refresh
+      tags:
+        - auth
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: refreshUser
+      x-stoplight:
+        id: lj3n7748zo7nd
+      requestBody:
+        $ref: '#/components/requestBodies/RefreshRequest'
+  '/users/{id}':
+    get:
+      summary: Get User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getUserById
+      x-stoplight:
+        id: 90bnypcxbbm5p
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: id
+        in: path
+        required: true
+    patch:
+      summary: Update User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: updateUser
+      x-stoplight:
+        id: 08itmlet345ts
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
+    delete:
+      summary: Delete User
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: deleteUser
+      x-stoplight:
+        id: frff899s40mkq
+  /users/me:
+    get:
+      summary: Get Current User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getCurrentUser
+      x-stoplight:
+        id: iqp9ec3avebrb
+    patch:
+      summary: Update Current User
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: lilzla89l003t
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: otggpzlnje5io
+      operationId: updateMyProfile
+      x-stoplight:
+        id: dczy3cwg6mocy
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
+  /users:
+    get:
+      summary: List Users
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: getUsers
+      x-stoplight:
+        id: gdcavbrpj7e88
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+        - schema:
+            type: integer
+            default: 25
+          in: query
+          name: size
+        - schema:
+            type: string
+            default: id
+          in: query
+          name: sort
+    post:
+      summary: Create User
+      tags:
+        - users
+      responses:
+        '201':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: createUser
+      x-stoplight:
+        id: mwnmvbr35oyxl
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserRequest'
+  /auth/logout:
+    post:
+      summary: Logout
+      tags:
+        - auth
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: logout
+      x-stoplight:
+        id: cw1tyfij5v5i7
+      requestBody:
+        $ref: '#/components/requestBodies/RefreshRequest'
+  /users/me/verify-password:
+    post:
+      summary: Verify Password
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/PasswordVerified'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: verifyPassword
+      x-stoplight:
+        id: h8b7mmynanx6a
+      requestBody:
+        $ref: '#/components/requestBodies/PasswordVerifyRequest'
+  /users/me/password:
+    patch:
+      summary: Change Password
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: ../base-api.yaml#/components/schemas/Error
+      operationId: changePassword
+      x-stoplight:
+        id: i9o6yqzfg5273
+      requestBody:
+        $ref: '#/components/requestBodies/ChangePasswordRequest'
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      required:
+        - id
+        - fullName
+        - email
+        - role
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+          x-stoplight:
+            id: n60zz3ep3od7o
+        email:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRoleEnum'
+    UserList:
+      title: UserList
+      type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalElements
+        - totalPages
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        first:
+          type: boolean
+        last:
+          type: boolean
+    UserRoleEnum:
+      title: UserRoleEnum
+      type: string
+      x-stoplight:
+        id: 5gitgmycgz5nr
+      enum:
+        - ADMIN
+        - TRAINER
+        - CLIENT
+    PasswordVerified:
+      title: PasswordVerified
+      x-stoplight:
+        id: 5cet3vx17ast0
+      type: object
+      properties:
+        verified:
+          type: boolean
+          x-stoplight:
+            id: 2sh6a2lgrfjr3
+  requestBodies:
+    UserRegisterRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - fullName
+              - email
+              - password
+            properties:
+              fullName:
+                type: string
+                x-stoplight:
+                  id: 3mk7e6l7u3f4j
+              email:
+                type: string
+              password:
+                type: string
+    LoginRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+    RefreshRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - refreshToken
+            properties:
+              refreshToken:
+                type: string
+    UpdateUserRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - fullName
+              - email
+            properties:
+              fullName:
+                type: string
+                x-stoplight:
+                  id: 1twlnkez8xnj9
+              email:
+                type: string
+    CreateUserRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - fullName
+              - email
+              - password
+            properties:
+              fullName:
+                type: string
+                x-stoplight:
+                  id: 7pacep5qd9pid
+              email:
+                type: string
+              password:
+                type: string
+              role:
+                $ref: '#/components/schemas/UserRoleEnum'
+    PasswordVerifyRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              password:
+                type: string
+                x-stoplight:
+                  id: 4vgz9tmucmv8d
+    ChangePasswordRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - oldPassword
+              - newPassword
+              - confirmPassword
+            properties:
+              oldPassword:
+                type: string
+                x-stoplight:
+                  id: o8lkewaly6666
+              newPassword:
+                type: string
+                x-stoplight:
+                  id: vo4j5azla5c1f
+              confirmPassword:
+                type: string
+                x-stoplight:
+                  id: 3nkx230sk4u5v
+  responses:
+    UserResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+    LoginResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - token
+              - refreshToken
+            properties:
+              email:
+                type: string
+              token:
+                type: string
+              refreshToken:
+                type: string
+    UserListResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserList'
+    PasswordVerified:
+      description: Password Verified
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PasswordVerified'
+tags:
+  - name: auth
+    description: 'User authentication and token management operations (Login, Register, Refresh).'
+  - name: users
+    description: User profile and administration (CRUD operations on users).
