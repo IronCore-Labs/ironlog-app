@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.security.service.impl;
 
+import dev.ironcorelabs.ironlog.core.exception.AccessDeniedException;
 import dev.ironcorelabs.ironlog.core.exception.RecordNotFoundException;
 import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
@@ -90,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User update(Long id, UpdateUserRequest request) {
-
+        validate(id);
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
@@ -103,6 +104,7 @@ public class UserServiceImpl implements UserService {
 
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
+        validate(user.getId());
 
         return update(user, request);
     }
@@ -157,9 +159,13 @@ public class UserServiceImpl implements UserService {
         refreshTokenService.revokeAllSessions(user.getId());
     }
 
-    private boolean validate(Long userId, boolean validateId) {
+    private void validate(Long userId) {
         final Long currentUserId = securityUtils.getCurrentUserId();
 
-        return false;
+        if (!currentUserId.equals(userId)
+            && !securityUtils.hasAuthority("user:write"))
+        {
+            throw new AccessDeniedException("security.access_denied");
+        }
     }
 }

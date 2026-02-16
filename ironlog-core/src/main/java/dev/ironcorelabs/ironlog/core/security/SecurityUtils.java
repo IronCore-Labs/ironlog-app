@@ -1,7 +1,9 @@
 package dev.ironcorelabs.ironlog.core.security;
 
+import java.util.UUID;
+
 public interface SecurityUtils {
     Long getCurrentUserId();
-    AuthenticateUser getCurrentUserDetailAuthenticateUser();
+    UUID getExternalId();
     boolean hasAuthority(String authority);
 }

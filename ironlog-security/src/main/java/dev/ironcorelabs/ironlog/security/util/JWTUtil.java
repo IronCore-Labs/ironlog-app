@@ -45,7 +45,7 @@ public class JWTUtil {
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .claim(JTI, jti)
+                .claim(JTI, jti.toString())
                 .compact();
     }
 
@@ -140,7 +140,8 @@ public class JWTUtil {
 
     public UUID getJti(Claims claims) {
         return Optional.ofNullable(claims)
-                .map(cls -> cls.get(JTI, UUID.class))
+                .map(cls -> cls.get(JTI, String.class))
+                .map(UUID::fromString)
                 .orElse(null);
     }
 

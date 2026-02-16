@@ -4,7 +4,7 @@ spring:
   config:
     import:
       - 'classpath:credentials.yaml'
-      - 'optional:classpath:permissions/'
+      - 'optional:classpath:./permissions/'
   profiles:
     default: dev
     active: dev
