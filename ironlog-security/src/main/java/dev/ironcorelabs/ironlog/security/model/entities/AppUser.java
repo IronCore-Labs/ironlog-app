@@ -18,7 +18,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue(generator = "user_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_gen", schema = "sec", sequenceName = "user_seq")
+    @SequenceGenerator(name = "user_gen", schema = "sec", sequenceName = "user_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "full_name", nullable = false)

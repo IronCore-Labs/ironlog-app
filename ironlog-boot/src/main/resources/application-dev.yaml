@@ -12,11 +12,20 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
+    create-schemas: true
+    schemas:
+      - public
+      - sec
+      - training
 token:
   expiration: ${TOKEN_EXPIRATION}
   refresh: ${REFRESH_EXPIRATION}
   secret: ${TOKEN_SECRET}
+logging:
+  level:
+    org.flywaydb: DEBUG
