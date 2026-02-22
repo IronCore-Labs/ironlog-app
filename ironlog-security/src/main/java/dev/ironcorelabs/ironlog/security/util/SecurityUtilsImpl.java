@@ -24,7 +24,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
         if (authentication == null || !authentication.isAuthenticated()
             || (authentication.getPrincipal() != null && authentication.getPrincipal().equals(ANONYMOUS_USER)))
         {
-            throw new UnauthorizedException("session.not.active");
+            return null;
         }
 
         if (authentication.getPrincipal() instanceof UserDetailsCustom userDetails)
@@ -32,7 +32,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
             return userDetails;
         }
 
-        throw new UnauthorizedException("session.not.active");
+        return null;
     }
 
     @Override
@@ -43,16 +43,12 @@ public class SecurityUtilsImpl implements SecurityUtils {
     @Override
     public boolean hasAuthority(String authority) {
 
-        if (!StringUtils.hasText(authority))
-        {
-            return false;
-        }
-
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated())
+        if (authentication == null || !authentication.isAuthenticated()
+            || !StringUtils.hasText(authority))
         {
-            throw new UnauthorizedException("session.not.active");
+            return false;
         }
 
         return authentication.getAuthorities()

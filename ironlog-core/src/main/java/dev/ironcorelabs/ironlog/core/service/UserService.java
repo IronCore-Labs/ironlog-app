@@ -1,4 +1,4 @@
-package dev.ironcorelabs.ironlog.security.service;
+package dev.ironcorelabs.ironlog.core.service;
 
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 
