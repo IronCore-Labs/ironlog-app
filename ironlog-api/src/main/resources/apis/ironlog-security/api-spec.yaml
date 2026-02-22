@@ -390,13 +390,14 @@ components:
       type: object
       required:
         - id
-        - fullName
+        - firstName
         - email
         - role
+        - lastName
       properties:
         id:
           type: integer
-        fullName:
+        firstName:
           type: string
           x-stoplight:
             id: n60zz3ep3od7o
@@ -404,6 +405,10 @@ components:
           type: string
         role:
           $ref: '#/components/schemas/UserRoleEnum'
+        lastName:
+          type: string
+          x-stoplight:
+            id: dw62v6nxwgoc3
     UserList:
       title: UserList
       type: object
@@ -458,11 +463,12 @@ components:
           schema:
             type: object
             required:
-              - fullName
+              - firstName
               - email
               - password
+              - lastName
             properties:
-              fullName:
+              firstName:
                 type: string
                 x-stoplight:
                   id: 3mk7e6l7u3f4j
@@ -470,6 +476,10 @@ components:
                 type: string
               password:
                 type: string
+              lastName:
+                type: string
+                x-stoplight:
+                  id: 2qbxxcd38pd8u
     LoginRequest:
       content:
         application/json:
@@ -499,26 +509,32 @@ components:
           schema:
             type: object
             required:
-              - fullName
+              - firstName
               - email
+              - lastName
             properties:
-              fullName:
+              firstName:
                 type: string
                 x-stoplight:
                   id: 1twlnkez8xnj9
               email:
                 type: string
+              lastName:
+                type: string
+                x-stoplight:
+                  id: ditq6l7na3ys5
     CreateUserRequest:
       content:
         application/json:
           schema:
             type: object
             required:
-              - fullName
+              - firstName
               - email
               - password
+              - lastName
             properties:
-              fullName:
+              firstName:
                 type: string
                 x-stoplight:
                   id: 7pacep5qd9pid
@@ -528,6 +544,10 @@ components:
                 type: string
               role:
                 $ref: '#/components/schemas/UserRoleEnum'
+              lastName:
+                type: string
+                x-stoplight:
+                  id: 2i7ha15d3lvk7
     PasswordVerifyRequest:
       content:
         application/json:

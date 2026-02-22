@@ -3,7 +3,6 @@ package dev.ironcorelabs.ironlog.security.controller;
 import dev.ironcorelabs.ironlog.restapi.openapi.api.AuthApi;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.service.AuthService;
-import dev.ironcorelabs.ironlog.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
