@@ -99,6 +99,30 @@
                             </importMappings>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>training</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/apis/ironlog-training/api-spec.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>dev.ironcorelabs.ironlog.restapi.openapi.api</apiPackage>
+                            <modelPackage>dev.ironcorelabs.ironlog.restapi.openapi.model</modelPackage>
+                            <skipOverwrite>true</skipOverwrite>
+                            <configOptions>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useTags>true</useTags>
+                                <interfaceOnly>true</interfaceOnly>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

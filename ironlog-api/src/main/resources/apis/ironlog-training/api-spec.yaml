@@ -1,0 +1,239 @@
+openapi: 3.0.0
+x-stoplight:
+  id: adf83pdtq6si4
+info:
+  title: ironlog-training
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /trainers/me:
+    get:
+      summary: Get my trainer profile
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getMyTrainerProfile
+      x-stoplight:
+        id: ok52p5fijg0hb
+    put:
+      summary: Update my trainer profile
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: updateMyTrainerProfile
+      x-stoplight:
+        id: m4fdsnwxmto37
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTrainerRequest'
+  /trainers:
+    post:
+      summary: Register trainer
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: registerTrainer
+      x-stoplight:
+        id: jnw7wrawtt7cb
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterTrainerRequest'
+    get:
+      summary: Get all trainers
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerListResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getAllTrainers
+      x-stoplight:
+        id: n9yevcimd1ryt
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+        - schema:
+            type: integer
+          in: query
+          name: size
+        - schema:
+            type: string
+          in: query
+          name: sort
+  '/trainers/{trainerId}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: trainerId
+        in: path
+        required: true
+    get:
+      summary: Get Trainer
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getTrainerById
+      x-stoplight:
+        id: 0555z94uo3eqj
+components:
+  schemas:
+    Trainer:
+      title: Trainer
+      x-stoplight:
+        id: a8of9r407w4nk
+      type: object
+      properties:
+        externalId:
+          type: string
+          x-stoplight:
+            id: 2v1g4mvm50yw5
+        birthDay:
+          type: string
+          x-stoplight:
+            id: y9ah0cblymu8n
+          format: date
+        location:
+          type: string
+          x-stoplight:
+            id: cfd7ujrjueylg
+        userData:
+          $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBase
+    TrainerList:
+      title: TrainerList
+      x-stoplight:
+        id: 13aprv42lhdwm
+      type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalElements
+        - totalPage
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          x-stoplight:
+            id: zvo8czuhl39tk
+          items:
+            $ref: '#/components/schemas/Trainer'
+        pageNumber:
+          type: integer
+          x-stoplight:
+            id: 26qj78x4thtd3
+        pageSize:
+          type: integer
+          x-stoplight:
+            id: 32msqtebgc51c
+        totalElements:
+          type: integer
+          x-stoplight:
+            id: 35cczdkrsez5y
+        totalPage:
+          type: integer
+          x-stoplight:
+            id: l5b6w85q95vyd
+        first:
+          type: boolean
+          x-stoplight:
+            id: 55koev96mpdt2
+        last:
+          type: boolean
+          x-stoplight:
+            id: q0bqyuap5uc0d
+  responses:
+    TrainerResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Trainer'
+    ErrorResponse:
+      description: Error Response
+      content:
+        application/json:
+          schema:
+            $ref: ../base-api.yaml#/components/schemas/Error
+    TrainerListResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TrainerList'
+  requestBodies:
+    UpdateTrainerRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - birthday
+              - location
+            properties:
+              birthday:
+                type: string
+                x-stoplight:
+                  id: kdi4ey460nid8
+                format: date
+              location:
+                type: string
+                x-stoplight:
+                  id: 2eiyznj0fjt3k
+    RegisterTrainerRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - birthday
+              - location
+            properties:
+              birthday:
+                type: string
+                x-stoplight:
+                  id: 1zux7wrtdbavv
+                format: date
+              location:
+                type: string
+                x-stoplight:
+                  id: qwuc1i6dcu1hm
+tags:
+  - name: trainers

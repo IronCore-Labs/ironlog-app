@@ -387,28 +387,14 @@ components:
   schemas:
     User:
       title: User
-      type: object
-      required:
-        - id
-        - firstName
-        - email
-        - role
-        - lastName
-      properties:
-        id:
-          type: integer
-        firstName:
-          type: string
-          x-stoplight:
-            id: n60zz3ep3od7o
-        email:
-          type: string
-        role:
-          $ref: '#/components/schemas/UserRoleEnum'
-        lastName:
-          type: string
-          x-stoplight:
-            id: dw62v6nxwgoc3
+      allOf:
+        - type: object
+          required:
+            - role
+          properties:
+            role:
+              $ref: '#/components/schemas/UserRoleEnum'
+        - $ref: '#/components/schemas/UserBase'
     UserList:
       title: UserList
       type: object
@@ -456,6 +442,34 @@ components:
           type: boolean
           x-stoplight:
             id: 2sh6a2lgrfjr3
+    UserBase:
+      title: UserBase
+      x-stoplight:
+        id: 0mgbv69jngfid
+      type: object
+      required:
+        - externalId
+        - firstName
+        - email
+        - lastName
+      properties:
+        externalId:
+          type: string
+          x-stoplight:
+            id: vc4s82ke4haj9
+          format: uuid
+        firstName:
+          type: string
+          x-stoplight:
+            id: tzq8hnowaifi0
+        email:
+          type: string
+          x-stoplight:
+            id: ex86hhss4bslm
+        lastName:
+          type: string
+          x-stoplight:
+            id: s3ks7vmx9u673
   requestBodies:
     UserRegisterRequest:
       content:
@@ -532,6 +546,7 @@ components:
               - firstName
               - email
               - password
+              - roles
               - lastName
             properties:
               firstName:
@@ -542,8 +557,12 @@ components:
                 type: string
               password:
                 type: string
-              role:
-                $ref: '#/components/schemas/UserRoleEnum'
+              roles:
+                x-stoplight:
+                  id: h2a011ufm701i
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRoleEnum'
               lastName:
                 type: string
                 x-stoplight:

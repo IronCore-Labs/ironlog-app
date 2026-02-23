@@ -1,6 +1,7 @@
 package dev.ironcorelabs.ironlog.security.controller;
 
 import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
+import dev.ironcorelabs.ironlog.core.service.UserService;
 import dev.ironcorelabs.ironlog.restapi.openapi.api.UsersApi;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import lombok.RequiredArgsConstructor;

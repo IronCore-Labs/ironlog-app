@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -39,9 +38,6 @@ public class AppUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
-
-    @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
 
     @OneToMany(mappedBy = "user")
     private List<RefreshToken> refreshTokens;

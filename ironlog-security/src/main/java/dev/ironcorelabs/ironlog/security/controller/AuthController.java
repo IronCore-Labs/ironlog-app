@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.security.controller;
 
+import dev.ironcorelabs.ironlog.core.service.UserService;
 import dev.ironcorelabs.ironlog.restapi.openapi.api.AuthApi;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.service.AuthService;

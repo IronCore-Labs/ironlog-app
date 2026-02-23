@@ -3,6 +3,7 @@ package dev.ironcorelabs.ironlog.core.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -21,6 +22,9 @@ public abstract class BaseEntity {
     @Column(name = "external_id", nullable = false, unique = true)
     private UUID externalId;
 
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -36,4 +40,12 @@ public abstract class BaseEntity {
     @LastModifiedBy
     @Column(name = "updated_by")
     private Long updatedBy;
+
+    @PrePersist
+    public void onCreate() {
+        if (externalId == null)
+        {
+            externalId = UUID.randomUUID();
+        }
+    }
 }

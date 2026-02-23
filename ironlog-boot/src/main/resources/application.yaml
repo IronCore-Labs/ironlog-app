@@ -6,8 +6,7 @@ spring:
       - 'classpath:credentials.yaml'
       - 'optional:classpath:./permissions/'
   profiles:
-    default: dev
-    active: dev
+    default: pdn
 server:
   port: ${PORT}
   servlet:
