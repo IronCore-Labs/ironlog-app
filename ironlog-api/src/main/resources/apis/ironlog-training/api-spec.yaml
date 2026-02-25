@@ -35,6 +35,8 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '403':
           $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
         '422':
           $ref: '#/components/responses/ErrorResponse'
       operationId: updateMyTrainerProfile
@@ -112,6 +114,153 @@ paths:
       operationId: getTrainerById
       x-stoplight:
         id: 0555z94uo3eqj
+    put:
+      summary: Update trainer
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: updateTrainer
+      x-stoplight:
+        id: 0bhr7e97mzybn
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTrainerRequest'
+      tags:
+        - trainers
+  /clients:
+    get:
+      summary: Get all clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientListResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getAllClients
+      x-stoplight:
+        id: w039jsz1t6rwc
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+        - schema:
+            type: integer
+          in: query
+          name: size
+        - schema:
+            type: string
+          in: query
+          name: sort
+      tags:
+        - clients
+    post:
+      summary: Register Client
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: registerClient
+      x-stoplight:
+        id: 3mn2u6v97vzia
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterClientRequest'
+  /clients/me:
+    get:
+      summary: Get my client profile
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          description: Not Found
+      operationId: getMyClientProfile
+      x-stoplight:
+        id: cbx930nddemu2
+    put:
+      summary: Update my client profile
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: updateMyClientProfile
+      x-stoplight:
+        id: gjhmqpq0m7r26
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateClientRequest'
+  '/clients/{clientId}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: clientId
+        in: path
+        required: true
+    get:
+      summary: Get client
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getClientById
+      x-stoplight:
+        id: oibeihyazj1ep
+    put:
+      summary: Update client
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: updateClient
+      x-stoplight:
+        id: x1nkzw5phu0tu
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateClientRequest'
 components:
   schemas:
     Trainer:
@@ -179,6 +328,110 @@ components:
           type: boolean
           x-stoplight:
             id: q0bqyuap5uc0d
+    Client:
+      title: Client
+      x-stoplight:
+        id: vzia7bnzqizht
+      type: object
+      x-internal: false
+      required:
+        - externalId
+        - birthday
+        - location
+        - weight
+        - height
+        - hasSurgeries
+      properties:
+        externalId:
+          type: string
+          x-stoplight:
+            id: 29wfmprjevgg3
+          format: uuid
+        birthday:
+          type: string
+          x-stoplight:
+            id: 699c4l5cu6j3v
+          format: date
+        location:
+          type: string
+          x-stoplight:
+            id: d84mclf4on7gq
+        weight:
+          type: number
+          x-stoplight:
+            id: mxk58mmjax69o
+        height:
+          type: number
+          x-stoplight:
+            id: tc4zpew1jzlv9
+        hasSurgeries:
+          type: boolean
+          x-stoplight:
+            id: 8qzdnfibdsvsq
+        surgeryDetails:
+          type: string
+          x-stoplight:
+            id: y6fuzx3icpfkz
+        heartConditions:
+          type: string
+          x-stoplight:
+            id: d5db3uxnwu5ki
+        allergies:
+          type: string
+          x-stoplight:
+            id: 9fk0ygsnd02ps
+        medications:
+          type: string
+          x-stoplight:
+            id: akff6vnsivw2k
+        observations:
+          type: string
+          x-stoplight:
+            id: u62aoyr1jbd4n
+    ClientList:
+      title: ClientList
+      x-stoplight:
+        id: 5nno7gqo5t25z
+      type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalElements
+        - totalPages
+        - first
+        - last
+      properties:
+        content:
+          type: array
+          x-stoplight:
+            id: wo2ntp1udzy3f
+          items:
+            $ref: '#/components/schemas/Client'
+        pageNumber:
+          type: integer
+          x-stoplight:
+            id: p3mq8mrksbjgm
+        pageSize:
+          type: integer
+          x-stoplight:
+            id: 4p5r3u8cwsb5x
+        totalElements:
+          type: integer
+          x-stoplight:
+            id: kcu1vregio77s
+        totalPages:
+          type: integer
+          x-stoplight:
+            id: ya5fp0o1l6u9t
+        first:
+          type: boolean
+          x-stoplight:
+            id: swlo1jg9qv8pc
+        last:
+          type: boolean
+          x-stoplight:
+            id: pdsqkkir92g74
   responses:
     TrainerResponse:
       description: Example response
@@ -198,6 +451,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TrainerList'
+    ClientResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Client'
+    ClientListResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClientList'
   requestBodies:
     UpdateTrainerRequest:
       content:
@@ -235,5 +500,112 @@ components:
                 type: string
                 x-stoplight:
                   id: qwuc1i6dcu1hm
+    RegisterClientRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - birthday
+              - location
+              - weight
+              - height
+              - hasSurgeries
+            properties:
+              birthday:
+                type: string
+                x-stoplight:
+                  id: z0dszj57augbf
+                format: date
+              location:
+                type: string
+                x-stoplight:
+                  id: pn7s9ayh5h5xq
+              weight:
+                type: number
+                x-stoplight:
+                  id: 73fvtnurrtw7i
+              height:
+                type: number
+                x-stoplight:
+                  id: lievws6glx9qz
+              hasSurgeries:
+                type: boolean
+                x-stoplight:
+                  id: 5xdmxe6323tnj
+              surgeryDetails:
+                type: string
+                x-stoplight:
+                  id: gkksqfzspszjt
+              heartConditions:
+                type: string
+                x-stoplight:
+                  id: u1r5z3yza8229
+              allergies:
+                type: string
+                x-stoplight:
+                  id: 2msra7r092qq4
+              medications:
+                type: string
+                x-stoplight:
+                  id: o36vnmzn223o8
+              observations:
+                type: string
+                x-stoplight:
+                  id: 3dhok216uiggx
+    UpdateClientRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - birthday
+              - location
+              - weight
+              - height
+              - hasSurgeries
+            properties:
+              birthday:
+                type: string
+                x-stoplight:
+                  id: 2qrmhm1ujkz1u
+                format: date
+              location:
+                type: string
+                x-stoplight:
+                  id: poc5zu2t4l9j3
+              weight:
+                type: number
+                x-stoplight:
+                  id: n9ek0y1vuwoxw
+              height:
+                type: number
+                x-stoplight:
+                  id: 17t12gj7abjoz
+              hasSurgeries:
+                type: boolean
+                x-stoplight:
+                  id: 3bkf59qo6tcni
+              surgeryDetails:
+                type: string
+                x-stoplight:
+                  id: cjm3hztu3zfve
+              heartConditions:
+                type: string
+                x-stoplight:
+                  id: plptvq2gchwyj
+              allergies:
+                type: string
+                x-stoplight:
+                  id: 1sajxth9yjex2
+              medications:
+                type: string
+                x-stoplight:
+                  id: ebabpipio764z
+              observations:
+                type: string
+                x-stoplight:
+                  id: 1j2j6ixe6k02u
 tags:
   - name: trainers
+  - name: clients
