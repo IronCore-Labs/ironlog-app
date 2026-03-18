@@ -1,9 +1,5 @@
 package dev.ironcorelabs.ironlog.security.service;
 
-import dev.ironcorelabs.ironlog.security.model.entities.AppUser;
-import io.jsonwebtoken.Claims;
-
-import java.util.Optional;
 import java.util.UUID;
 
 public interface RefreshTokenService {

@@ -1,4 +1,4 @@
-package dev.ironcorelabs.ironlog.security.model.entities;
+package dev.ironcorelabs.ironlog.security.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

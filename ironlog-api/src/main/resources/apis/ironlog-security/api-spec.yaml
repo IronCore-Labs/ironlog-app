@@ -7,25 +7,6 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  /auth/register:
-    post:
-      summary: Register User
-      tags:
-        - auth
-      responses:
-        '200':
-          $ref: '#/components/responses/UserResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
-      operationId: registerUser
-      x-stoplight:
-        id: y8nuvzmnq8srx
-      requestBody:
-        $ref: '#/components/requestBodies/UserRegisterRequest'
   /auth/login:
     post:
       summary: Login
@@ -383,6 +364,30 @@ paths:
         id: i9o6yqzfg5273
       requestBody:
         $ref: '#/components/requestBodies/ChangePasswordRequest'
+  '/users/{userId}/promote-admin':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: userId
+        in: path
+        required: true
+    patch:
+      summary: Promote to Admin
+      tags:
+        - users
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: promoteAdmin
+      x-stoplight:
+        id: mg8le7l4hr8mk
 components:
   schemas:
     User:
@@ -470,30 +475,40 @@ components:
           type: string
           x-stoplight:
             id: s3ks7vmx9u673
+    UserBaseRequest:
+      title: UserBaseRequest
+      x-stoplight:
+        id: psk4luui8w0pz
+      type: object
+      required:
+        - firstName
+        - email
+        - password
+        - lastName
+      properties:
+        firstName:
+          type: string
+          x-stoplight:
+            id: p2cts8a6w7zcc
+        email:
+          type: string
+          x-stoplight:
+            id: 5gxyw16uaqpkg
+        password:
+          type: string
+          x-stoplight:
+            id: nu0j2z0w88dk4
+        lastName:
+          type: string
+          x-stoplight:
+            id: 0t4txtfr9q0uj
   requestBodies:
-    UserRegisterRequest:
+    RegisterUserRequest:
       content:
         application/json:
           schema:
-            type: object
-            required:
-              - firstName
-              - email
-              - password
-              - lastName
-            properties:
-              firstName:
-                type: string
-                x-stoplight:
-                  id: 3mk7e6l7u3f4j
-              email:
-                type: string
-              password:
-                type: string
-              lastName:
-                type: string
-                x-stoplight:
-                  id: 2qbxxcd38pd8u
+            allOf:
+              - $ref: '#/components/schemas/UserBaseRequest'
     LoginRequest:
       content:
         application/json:
@@ -541,32 +556,8 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            required:
-              - firstName
-              - email
-              - password
-              - roles
-              - lastName
-            properties:
-              firstName:
-                type: string
-                x-stoplight:
-                  id: 7pacep5qd9pid
-              email:
-                type: string
-              password:
-                type: string
-              roles:
-                x-stoplight:
-                  id: h2a011ufm701i
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserRoleEnum'
-              lastName:
-                type: string
-                x-stoplight:
-                  id: 2i7ha15d3lvk7
+            allOf:
+              - $ref: '#/components/schemas/UserBaseRequest'
     PasswordVerifyRequest:
       content:
         application/json:
@@ -635,6 +626,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PasswordVerified'
+    ErrorResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: ../base-api.yaml#/components/schemas/Error
 tags:
   - name: auth
     description: 'User authentication and token management operations (Login, Register, Refresh).'

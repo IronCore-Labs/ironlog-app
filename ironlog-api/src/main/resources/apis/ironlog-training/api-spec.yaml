@@ -261,6 +261,98 @@ paths:
         id: x1nkzw5phu0tu
       requestBody:
         $ref: '#/components/requestBodies/UpdateClientRequest'
+  '/clients/{clientId}/user-data':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: clientId
+        in: path
+        required: true
+    put:
+      summary: Update user data of client
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: updateUserData
+      x-stoplight:
+        id: 2zj2bannzfxv2
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateClientRequest'
+    get:
+      summary: Get client user data
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getClientUserData
+      x-stoplight:
+        id: 1hge3hiv74hzf
+  '/trainers/{trainerId}/activate':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: trainerId
+        in: path
+        required: true
+    post:
+      summary: Promote to Trainer
+      tags:
+        - trainers
+      responses:
+        '200':
+          $ref: '#/components/responses/TrainerResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/TrainerResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: promoteTrainer
+      x-stoplight:
+        id: lminsb5tz4vk7
+  '/clients/{clientId}/activate':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: clientId
+        in: path
+        required: true
+    post:
+      summary: Promote to Client
+      tags:
+        - clients
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: promoteClient
+      x-stoplight:
+        id: lmtj8vfz93w9p
 components:
   schemas:
     Trainer:
@@ -488,8 +580,7 @@ components:
           schema:
             type: object
             required:
-              - birthday
-              - location
+              - userData
             properties:
               birthday:
                 type: string
@@ -500,17 +591,15 @@ components:
                 type: string
                 x-stoplight:
                   id: qwuc1i6dcu1hm
+              userData:
+                $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBaseRequest
     RegisterClientRequest:
       content:
         application/json:
           schema:
             type: object
             required:
-              - birthday
-              - location
-              - weight
-              - height
-              - hasSurgeries
+              - userData
             properties:
               birthday:
                 type: string
@@ -553,6 +642,8 @@ components:
                 type: string
                 x-stoplight:
                   id: 3dhok216uiggx
+              userData:
+                $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBaseRequest
     UpdateClientRequest:
       content:
         application/json:

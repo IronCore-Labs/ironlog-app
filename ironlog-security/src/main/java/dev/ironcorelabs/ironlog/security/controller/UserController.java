@@ -24,7 +24,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user:write')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> updateUser(UUID id, UpdateUserRequest request) {
         return ResponseEntity.ok(service.updateByExternalId(id, request));
     }
@@ -36,13 +36,13 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserList> getUsers(Integer page, Integer size, String sort) {
         return ResponseEntity.ok(service.findAll(page, size));
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserById(UUID id) {
         return ResponseEntity.ok(service.findByExternalId(id));
     }
@@ -53,15 +53,15 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user:write')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(UUID id) {
         service.deleteByExternalId(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<User> createUser(CreateUserRequest request) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> createUser(UserBaseRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
@@ -69,5 +69,10 @@ public class UserController implements UsersApi {
     public ResponseEntity<Void> changePassword(ChangePasswordRequest request) {
         service.changePassword(utils.getCurrentUserId(), request);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<User> promoteAdmin(UUID userId) {
+        return UsersApi.super.promoteAdmin(userId);
     }
 }

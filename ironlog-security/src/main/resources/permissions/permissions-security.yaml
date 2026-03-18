@@ -1,6 +1,0 @@
-security-rbac:
-  modules:
-    security:
-      ROLE_ADMIN:
-        - user:read
-        - user:write

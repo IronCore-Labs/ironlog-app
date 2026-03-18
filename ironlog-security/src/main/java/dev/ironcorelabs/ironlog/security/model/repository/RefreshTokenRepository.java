@@ -1,6 +1,6 @@
-package dev.ironcorelabs.ironlog.security.model.repositories;
+package dev.ironcorelabs.ironlog.security.model.repository;
 
-import dev.ironcorelabs.ironlog.security.model.entities.RefreshToken;
+import dev.ironcorelabs.ironlog.security.model.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

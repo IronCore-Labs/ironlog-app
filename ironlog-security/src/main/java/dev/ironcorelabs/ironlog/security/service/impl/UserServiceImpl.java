@@ -7,9 +7,9 @@ import dev.ironcorelabs.ironlog.core.service.UserService;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.exception.BadCredentialsException;
 import dev.ironcorelabs.ironlog.security.mapper.UserMapper;
-import dev.ironcorelabs.ironlog.security.model.entities.AppUser;
+import dev.ironcorelabs.ironlog.security.model.entity.AppUser;
 import dev.ironcorelabs.ironlog.security.model.enums.UserRole;
-import dev.ironcorelabs.ironlog.security.model.repositories.UserRepository;
+import dev.ironcorelabs.ironlog.security.model.repository.UserRepository;
 import dev.ironcorelabs.ironlog.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,20 +52,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User register(RegisterUserRequest request) {
-        final AppUser user = mapper.toEntity(request);
-        user.setPassword(encoder.encode(request.getPassword()));
-        user.setRole(UserRole.ROLE_CLIENT);
-        user.setEnabled(Boolean.TRUE);
-
-        return mapper.toDto(repository.save(user));
+    public User create(UserBaseRequest request) {
+        validateAdmin();
+        return createUnsafe(request, UserRoleEnum.ADMIN);
     }
 
     @Override
     @Transactional
-    public User create(CreateUserRequest request) {
+    public User createUnsafe(UserBaseRequest request, UserRoleEnum role) {
         final AppUser user = mapper.toEntity(request);
+        user.setRoles(List.of(mapper.toEntity(role)));
         user.setPassword(encoder.encode(request.getPassword()));
+        user.setNeedRegistration(true);
 
         return mapper.toDto(repository.save(user));
     }
@@ -92,6 +90,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User update(Long id, UpdateUserRequest request) {
         validate(id);
+        return updateUnsafe(id, request);
+    }
+
+    @Override
+    @Transactional
+    public User updateByExternalId(UUID id, UpdateUserRequest request) {
+        validateExternalId(id);
+        return updateUnsafeByExternalId(id, request);
+    }
+
+    @Override
+    @Transactional
+    public User updateUnsafe(Long id, UpdateUserRequest request) {
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
@@ -100,17 +111,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateByExternalId(UUID id, UpdateUserRequest request) {
-
+    public User updateUnsafeByExternalId(UUID id, UpdateUserRequest request) {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
-        validate(user.getId());
 
         return update(user, request);
     }
 
     private User update(AppUser user, UpdateUserRequest request) {
         mapper.updateEntity(request, user);
+
+        if (user.getNeedRegistration())
+        {
+            user.setNeedRegistration(false);
+        }
 
         return mapper.toDto(repository.save(user));
     }
@@ -148,22 +162,83 @@ public class UserServiceImpl implements UserService {
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
+        changeUserPassword(user, request);
+    }
+
+    @Override
+    @Transactional
+    public void changePasswordByExternalId(UUID id, ChangePasswordRequest request) {
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        changeUserPassword(user, request);
+    }
+
+    private void changeUserPassword(AppUser user, ChangePasswordRequest request) {
         if (!encoder.matches(request.getOldPassword(), user.getPassword()))
         {
             throw new BadCredentialsException("password.incorrect");
         }
 
         user.setPassword(encoder.encode(request.getNewPassword()));
+
+        if (user.getPasswordChangeRequired())
+        {
+            user.setPasswordChangeRequired(false);
+        }
+
         repository.save(user);
 
         refreshTokenService.revokeAllSessions(user.getId());
+    }
+
+    @Override
+    @Transactional
+    public void promoteToAdmin(UUID id) {
+        addRole(id, UserRoleEnum.ADMIN);
+    }
+
+    @Override
+    @Transactional
+    public void addRole(UUID id, UserRoleEnum role) {
+        validateAdmin();
+
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        final UserRole entityRole = mapper.toEntity(role);
+
+        if (user.getRoles().stream().anyMatch(entityRole::equals))
+        {
+            return ;
+        }
+
+        user.addRole(entityRole);
+        repository.save(user);
     }
 
     private void validate(Long userId) {
         final Long currentUserId = securityUtils.getCurrentUserId();
 
         if (!currentUserId.equals(userId)
-            && !securityUtils.hasAuthority("user:write"))
+            && !securityUtils.hasAuthority("ROLE_ADMIN"))
+        {
+            throw new AccessDeniedException("security.access_denied");
+        }
+    }
+
+    private void validateExternalId(UUID exernalId) {
+        final UUID currentExternalId = securityUtils.getExternalId();
+
+        if (!currentExternalId.equals(exernalId)
+                && !securityUtils.hasAuthority("ROLE_ADMIN"))
+        {
+            throw new AccessDeniedException("security.access_denied");
+        }
+    }
+
+    private void validateAdmin() {
+        if (!securityUtils.hasAuthority("ROLE_ADMIN"))
         {
             throw new AccessDeniedException("security.access_denied");
         }

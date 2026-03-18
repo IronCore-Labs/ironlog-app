@@ -13,9 +13,9 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User register(RegisterUserRequest request);
+    User create(UserBaseRequest request);
 
-    User create(CreateUserRequest request);
+    User createUnsafe(UserBaseRequest request, UserRoleEnum role);
 
     void delete(Long id);
 
@@ -25,6 +25,10 @@ public interface UserService {
 
     User updateByExternalId(UUID id, UpdateUserRequest request);
 
+    User updateUnsafe(Long id, UpdateUserRequest request);
+
+    User updateUnsafeByExternalId(UUID id, UpdateUserRequest request);
+
     List<User> findAll();
 
     UserList findAll(int page, int size);
@@ -32,4 +36,10 @@ public interface UserService {
     PasswordVerified verifyPassword(Long id, String password);
 
     void changePassword(Long id, ChangePasswordRequest request);
+
+    void changePasswordByExternalId(UUID id, ChangePasswordRequest request);
+
+    void promoteToAdmin(UUID id);
+
+    void addRole(UUID id, UserRoleEnum role);
 }

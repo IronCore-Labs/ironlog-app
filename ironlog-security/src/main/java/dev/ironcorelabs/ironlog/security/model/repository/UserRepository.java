@@ -1,10 +1,9 @@
-package dev.ironcorelabs.ironlog.security.model.repositories;
+package dev.ironcorelabs.ironlog.security.model.repository;
 
-import dev.ironcorelabs.ironlog.security.model.entities.AppUser;
+import dev.ironcorelabs.ironlog.security.model.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
