@@ -72,7 +72,28 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> promoteAdmin(UUID userId) {
-        return UsersApi.super.promoteAdmin(userId);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> promoteAdmin(UUID userId) {
+        service.promoteToAdmin(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> revokeAdmin(UUID userId) {
+        service.revokeAdmin(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> changeStatus(UUID userId, ChangeStatusRequest changeStatusRequest) {
+        service.changeStatus(userId, changeStatusRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deactivate() {
+        service.deactivate(utils.getCurrentUserId());
+        return ResponseEntity.noContent().build();
     }
 }

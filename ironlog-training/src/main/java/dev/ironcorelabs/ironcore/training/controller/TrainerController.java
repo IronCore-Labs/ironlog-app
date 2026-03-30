@@ -4,7 +4,7 @@ import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
 import dev.ironcorelabs.ironlog.core.service.TrainerService;
 import dev.ironcorelabs.ironlog.restapi.openapi.api.TrainersApi;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.RegisterTrainerRequest;
-import dev.ironcorelabs.ironlog.restapi.openapi.model.Trainer;
+import dev.ironcorelabs.ironlog.restapi.openapi.model.TrainerDto;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.TrainerList;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.UpdateMyTrainerProfileRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,32 +21,47 @@ public class TrainerController implements TrainersApi {
     private final SecurityUtils securityUtils;
 
     @Override
-    public ResponseEntity<Trainer> updateTrainer(UUID trainerId, UpdateMyTrainerProfileRequest request) {
-        return ResponseEntity.ok(trainerService.updateByExternalId(trainerId, request));
+    public ResponseEntity<TrainerDto> updateTrainer(UUID trainerId, UpdateMyTrainerProfileRequest updateMyTrainerProfileRequest) {
+        return TrainersApi.super.updateTrainer(trainerId, updateMyTrainerProfileRequest);
     }
 
     @Override
-    public ResponseEntity<Trainer> updateMyTrainerProfile(UpdateMyTrainerProfileRequest request) {
-        return ResponseEntity.ok(trainerService.update(securityUtils.getCurrentUserId(), request));
+    public ResponseEntity<TrainerDto> updateMyTrainerProfile(UpdateMyTrainerProfileRequest updateMyTrainerProfileRequest) {
+        return TrainersApi.super.updateMyTrainerProfile(updateMyTrainerProfileRequest);
     }
 
     @Override
-    public ResponseEntity<Trainer> registerTrainer(RegisterTrainerRequest request) {
-        return ResponseEntity.ok(trainerService.create(request));
+    public ResponseEntity<Void> selfAssing(UUID clientId) {
+        return TrainersApi.super.selfAssing(clientId);
     }
 
     @Override
-    public ResponseEntity<Trainer> getTrainerById(UUID trainerId) {
-        return ResponseEntity.ok(trainerService.findByExternalId(trainerId));
+    public ResponseEntity<TrainerDto> registerTrainer(RegisterTrainerRequest registerTrainerRequest) {
+        return TrainersApi.super.registerTrainer(registerTrainerRequest);
     }
 
     @Override
-    public ResponseEntity<Trainer> getMyTrainerProfile() {
-        return ResponseEntity.ok(trainerService.findById(securityUtils.getCurrentUserId()));
+    public ResponseEntity<Void> promoteTrainer(UUID trainerId) {
+        return TrainersApi.super.promoteTrainer(trainerId);
+    }
+
+    @Override
+    public ResponseEntity<TrainerDto> getTrainerById(UUID trainerId) {
+        return TrainersApi.super.getTrainerById(trainerId);
+    }
+
+    @Override
+    public ResponseEntity<TrainerDto> getMyTrainerProfile() {
+        return TrainersApi.super.getMyTrainerProfile();
     }
 
     @Override
     public ResponseEntity<TrainerList> getAllTrainers(Integer page, Integer size, String sort) {
-        return ResponseEntity.ok(trainerService.findAll(page, size));
+        return TrainersApi.super.getAllTrainers(page, size, sort);
+    }
+
+    @Override
+    public ResponseEntity<Void> deactivate() {
+        return TrainersApi.super.deactivate();
     }
 }

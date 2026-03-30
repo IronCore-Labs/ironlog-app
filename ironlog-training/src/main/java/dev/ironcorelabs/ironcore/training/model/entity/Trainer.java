@@ -21,7 +21,7 @@ public class Trainer extends BaseEntity {
     private Long id;
 
     @Column(name = "birthday")
-    private LocalDate birthday;
+    private LocalDate birthDay;
 
     @Column(name = "location")
     private String location;

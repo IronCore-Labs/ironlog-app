@@ -57,4 +57,8 @@ public class AppUser extends BaseEntity {
     public void addRole(UserRole role) {
         roles.add(role);
     }
+
+    public void revokeRole(UserRole role) {
+        roles.remove(role);
+    }
 }

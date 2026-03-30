@@ -31,6 +31,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/TrainerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -52,6 +54,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/TrainerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -119,6 +123,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/TrainerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -169,6 +175,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ClientResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -204,6 +212,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/TrainerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -256,6 +266,8 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '422':
           $ref: '#/components/responses/ErrorResponse'
+        4XX:
+          $ref: '#/components/responses/ErrorResponse'
       operationId: updateClient
       x-stoplight:
         id: x1nkzw5phu0tu
@@ -276,6 +288,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ClientResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -318,8 +332,8 @@ paths:
       tags:
         - trainers
       responses:
-        '200':
-          $ref: '#/components/responses/TrainerResponse'
+        '204':
+          description: No Content
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -342,8 +356,8 @@ paths:
       tags:
         - clients
       responses:
-        '200':
-          $ref: '#/components/responses/ClientResponse'
+        '204':
+          description: No Content
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -353,10 +367,138 @@ paths:
       operationId: promoteClient
       x-stoplight:
         id: lmtj8vfz93w9p
+  /trainer/my-athletes:
+    get:
+      summary: Get my athletes
+      tags: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientListResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: getMyAthletes
+      x-stoplight:
+        id: cfkve3nhwxebz
+    post:
+      summary: Register and enroll
+      tags: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ClientResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: registerAndEnroll
+      x-stoplight:
+        id: 53pzxs5o6975x
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterClientRequest'
+  '/enrollments/{trainerId}/{clientId}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: trainerId
+        in: path
+        required: true
+      - schema:
+          type: string
+          format: uuid
+        name: clientId
+        in: path
+        required: true
+    post:
+      summary: Assing client to trainer
+      tags:
+        - enrollments
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: assign
+      x-stoplight:
+        id: i957ujumds9ex
+  '/trainer/my-athletes/{clientId}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: clientId
+        in: path
+        required: true
+    post:
+      summary: Self assing client
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: selfAssing
+      x-stoplight:
+        id: elivgsq1tgmea
+      tags:
+        - trainers
+  /trainers/me/deactivate:
+    patch:
+      summary: Deactivate my profile
+      tags:
+        - trainers
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: deactivate
+      x-stoplight:
+        id: hd45e9m0uok02
+  '/trainer/{id}/status':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    patch:
+      summary: Change trainer status
+      tags: []
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: changeTrainerStatus
+      x-stoplight:
+        id: zzhxudo7imwkp
+      requestBody:
+        $ref: '#/components/requestBodies/ChangeStatusRequest'
 components:
   schemas:
-    Trainer:
-      title: Trainer
+    TrainerDto:
+      title: TrainerDto
       x-stoplight:
         id: a8of9r407w4nk
       type: object
@@ -376,6 +518,18 @@ components:
             id: cfd7ujrjueylg
         userData:
           $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBase
+        speciality:
+          type: string
+          x-stoplight:
+            id: 4ygnp9k7driam
+        bio:
+          type: string
+          x-stoplight:
+            id: nj0ajdjnevh0r
+        experienceYears:
+          type: integer
+          x-stoplight:
+            id: 8wnynv25ek3t6
     TrainerList:
       title: TrainerList
       x-stoplight:
@@ -395,7 +549,7 @@ components:
           x-stoplight:
             id: zvo8czuhl39tk
           items:
-            $ref: '#/components/schemas/Trainer'
+            $ref: '#/components/schemas/TrainerDto'
         pageNumber:
           type: integer
           x-stoplight:
@@ -530,7 +684,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Trainer'
+            $ref: '#/components/schemas/TrainerDto'
     ErrorResponse:
       description: Error Response
       content:
@@ -564,6 +718,8 @@ components:
             required:
               - birthday
               - location
+              - speciality
+              - experienceYears
             properties:
               birthday:
                 type: string
@@ -574,6 +730,18 @@ components:
                 type: string
                 x-stoplight:
                   id: 2eiyznj0fjt3k
+              speciality:
+                type: string
+                x-stoplight:
+                  id: 4ckj76ht7bgix
+              bio:
+                type: string
+                x-stoplight:
+                  id: 9jx43x0zrnz4i
+              experienceYears:
+                type: integer
+                x-stoplight:
+                  id: nyhp53tly6t3g
     RegisterTrainerRequest:
       content:
         application/json:
@@ -593,6 +761,18 @@ components:
                   id: qwuc1i6dcu1hm
               userData:
                 $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBaseRequest
+              speciality:
+                type: string
+                x-stoplight:
+                  id: xidbl0lq0t5f9
+              bio:
+                type: string
+                x-stoplight:
+                  id: m8iasm3emdg8k
+              experienceYears:
+                type: integer
+                x-stoplight:
+                  id: cgrgu8q3rlrpr
     RegisterClientRequest:
       content:
         application/json:
@@ -697,6 +877,15 @@ components:
                 type: string
                 x-stoplight:
                   id: 1j2j6ixe6k02u
+    ChangeStatusRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../base-api.yaml#/components/schemas/Error
 tags:
   - name: trainers
   - name: clients
+  - name: enrollments

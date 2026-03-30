@@ -3,15 +3,16 @@ package dev.ironcorelabs.ironlog.security.util;
 import dev.ironcorelabs.ironlog.core.exception.UnauthorizedException;
 import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
 import dev.ironcorelabs.ironlog.security.dto.UserDetailsCustom;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Objects;
 import java.util.UUID;
 
-@Component
+@Component("sec")
+@RequiredArgsConstructor
 public class SecurityUtilsImpl implements SecurityUtils {
 
     public Long getCurrentUserId() {
@@ -41,12 +42,11 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
-    public boolean hasAuthority(String authority) {
-
+    public boolean hasRole(String role) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
-            || !StringUtils.hasText(authority))
+                || !StringUtils.hasText(role))
         {
             return false;
         }
@@ -54,7 +54,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
         return authentication.getAuthorities()
                 .stream()
                 .filter(auth -> auth.getAuthority() != null)
-                .anyMatch(auth -> auth.getAuthority().equals(authority));
+                .anyMatch(auth -> auth.getAuthority().equals(role));
     }
 
     private static final String ANONYMOUS_USER = "anonymousUser";

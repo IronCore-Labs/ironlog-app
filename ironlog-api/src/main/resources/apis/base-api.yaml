@@ -26,3 +26,11 @@ components:
           type: string
         url:
           type: string
+    RecordStatus:
+      title: RecordStatus
+      x-stoplight:
+        id: 767hjdv6vfzov
+      enum:
+        - ACTIVE
+        - INACTIVE
+  requestBodies: {}

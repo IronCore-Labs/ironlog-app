@@ -41,5 +41,15 @@ public interface UserService {
 
     void promoteToAdmin(UUID id);
 
+    void revokeAdmin(UUID id);
+
     void addRole(UUID id, UserRoleEnum role);
+
+    void revokeRole(UUID id, UserRoleEnum role);
+
+    void changeStatus(UUID id, ChangeStatusRequest request);
+
+    void deactivateByUUID(UUID id);
+
+    void deactivate(Long id);
 }

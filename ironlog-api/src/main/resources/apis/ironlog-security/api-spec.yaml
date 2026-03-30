@@ -67,23 +67,11 @@ paths:
         '200':
           $ref: '#/components/responses/UserResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: getUserById
       x-stoplight:
         id: 90bnypcxbbm5p
@@ -102,29 +90,13 @@ paths:
         '200':
           $ref: '#/components/responses/UserResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: updateUser
       x-stoplight:
         id: 08itmlet345ts
@@ -138,23 +110,11 @@ paths:
         '204':
           description: No Content
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: deleteUser
       x-stoplight:
         id: frff899s40mkq
@@ -167,11 +127,9 @@ paths:
         '200':
           $ref: '#/components/responses/UserResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
       operationId: getCurrentUser
       x-stoplight:
         id: iqp9ec3avebrb
@@ -183,33 +141,11 @@ paths:
         '200':
           $ref: '#/components/responses/UserResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    x-stoplight:
-                      id: lilzla89l003t
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    x-stoplight:
-                      id: otggpzlnje5io
+          $ref: '#/components/responses/ErrorResponse'
       operationId: updateMyProfile
       x-stoplight:
         id: dczy3cwg6mocy
@@ -224,17 +160,9 @@ paths:
         '200':
           $ref: '#/components/responses/UserListResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: getUsers
       x-stoplight:
         id: gdcavbrpj7e88
@@ -261,23 +189,11 @@ paths:
         '201':
           $ref: '#/components/responses/UserResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: createUser
       x-stoplight:
         id: mwnmvbr35oyxl
@@ -292,11 +208,7 @@ paths:
         '204':
           description: No Content
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: logout
       x-stoplight:
         id: cw1tyfij5v5i7
@@ -311,23 +223,11 @@ paths:
         '200':
           $ref: '#/components/responses/PasswordVerified'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: verifyPassword
       x-stoplight:
         id: h8b7mmynanx6a
@@ -342,23 +242,11 @@ paths:
         '204':
           description: No Content
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: ../base-api.yaml#/components/schemas/Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: changePassword
       x-stoplight:
         id: i9o6yqzfg5273
@@ -377,8 +265,8 @@ paths:
       tags:
         - users
       responses:
-        '200':
-          $ref: '#/components/responses/UserResponse'
+        '204':
+          description: No Content
         '401':
           $ref: '#/components/responses/ErrorResponse'
         '403':
@@ -388,6 +276,75 @@ paths:
       operationId: promoteAdmin
       x-stoplight:
         id: mg8le7l4hr8mk
+  '/users/{userId}/revoke-admin':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: Revoke admin
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: revokeAdmin
+      x-stoplight:
+        id: jw16qfuqvj7v7
+  '/users/{userId}/status':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: userId
+        in: path
+        required: true
+    patch:
+      summary: Change user status
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: changeStatus
+      x-stoplight:
+        id: rt3lhtx0qwbi9
+      requestBody:
+        $ref: '#/components/requestBodies/ChangeStatusRequest'
+  /users/me/deactivate:
+    patch:
+      summary: Change my status
+      tags:
+        - users
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: deactivate
+      x-stoplight:
+        id: rc8vbix8sozw9
+        description: Shared Request
+    parameters: []
 components:
   schemas:
     User:
@@ -590,6 +547,14 @@ components:
                 type: string
                 x-stoplight:
                   id: 3nkx230sk4u5v
+    ChangeStatusRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../base-api.yaml#/components/schemas/RecordStatus
   responses:
     UserResponse:
       description: Example response

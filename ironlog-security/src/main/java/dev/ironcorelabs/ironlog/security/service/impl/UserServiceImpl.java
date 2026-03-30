@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.security.service.impl;
 
+import dev.ironcorelabs.ironlog.core.event.UserStatusEvent;
 import dev.ironcorelabs.ironlog.core.exception.AccessDeniedException;
 import dev.ironcorelabs.ironlog.core.exception.RecordNotFoundException;
 import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
@@ -12,9 +13,11 @@ import dev.ironcorelabs.ironlog.security.model.enums.UserRole;
 import dev.ironcorelabs.ironlog.security.model.repository.UserRepository;
 import dev.ironcorelabs.ironlog.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
     private final SecurityUtils securityUtils;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public User findById(Long id) {
@@ -52,8 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isAdmin()")
     public User create(UserBaseRequest request) {
-        validateAdmin();
         return createUnsafe(request, UserRoleEnum.ADMIN);
     }
 
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isAdmin()")
     public void delete(Long id) {
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
@@ -79,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isAdmin()")
     public void deleteByExternalId(UUID externalId) {
         final AppUser user = repository.findByExternalId(externalId)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
@@ -88,15 +94,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
     public User update(Long id, UpdateUserRequest request) {
-        validate(id);
         return updateUnsafe(id, request);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
     public User updateByExternalId(UUID id, UpdateUserRequest request) {
-        validateExternalId(id);
         return updateUnsafeByExternalId(id, request);
     }
 
@@ -130,6 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("@sec.isAdmin()")
     public List<User> findAll() {
         return repository.findAll().stream().map(mapper::toDto).toList();
     }
@@ -194,15 +201,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@sec.isAdmin()")
     public void promoteToAdmin(UUID id) {
         addRole(id, UserRoleEnum.ADMIN);
     }
 
     @Override
     @Transactional
-    public void addRole(UUID id, UserRoleEnum role) {
-        validateAdmin();
+    @PreAuthorize("@sec.isAdmin()")
+    public void revokeAdmin(UUID id) {
+        revokeRole(id, UserRoleEnum.ADMIN);
+    }
 
+    @Override
+    @Transactional
+    @PreAuthorize("@sec.isAdmin()")
+    public void addRole(UUID id, UserRoleEnum role) {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
@@ -217,30 +231,57 @@ public class UserServiceImpl implements UserService {
         repository.save(user);
     }
 
-    private void validate(Long userId) {
-        final Long currentUserId = securityUtils.getCurrentUserId();
+    @Override
+    @Transactional
+    @PreAuthorize("@sec.isAdmin()")
+    public void revokeRole(UUID id, UserRoleEnum role) {
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
-        if (!currentUserId.equals(userId)
-            && !securityUtils.hasAuthority("ROLE_ADMIN"))
+        final UserRole entityRole = mapper.toEntity(role);
+
+        if (user.getRoles().stream().noneMatch(entityRole::equals))
         {
-            throw new AccessDeniedException("security.access_denied");
+            return ;
         }
+
+        user.revokeRole(entityRole);
+        repository.save(user);
     }
 
-    private void validateExternalId(UUID exernalId) {
-        final UUID currentExternalId = securityUtils.getExternalId();
+    @Override
+    @Transactional
+    @PreAuthorize("@sec.isAdmin()")
+    public void changeStatus(UUID id, ChangeStatusRequest request) {
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
-        if (!currentExternalId.equals(exernalId)
-                && !securityUtils.hasAuthority("ROLE_ADMIN"))
-        {
-            throw new AccessDeniedException("security.access_denied");
-        }
+        changeStatus(user, request);
     }
 
-    private void validateAdmin() {
-        if (!securityUtils.hasAuthority("ROLE_ADMIN"))
-        {
-            throw new AccessDeniedException("security.access_denied");
-        }
+    @Override
+    @Transactional
+    @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
+    public void deactivateByUUID(UUID id) {
+        final AppUser user = repository.findByExternalId(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        changeStatus(user, new ChangeStatusRequest().status(RecordStatus.INACTIVE));
+    }
+
+    @Override
+    @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
+    public void deactivate(Long id) {
+        final AppUser user = repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        changeStatus(user, new ChangeStatusRequest().status(RecordStatus.INACTIVE));
+    }
+
+    private void changeStatus(AppUser user, ChangeStatusRequest request) {
+        user.setEnabled(request.getStatus().equals(RecordStatus.ACTIVE));
+        repository.save(user);
+
+        eventPublisher.publishEvent(new UserStatusEvent(this, user.getId(), user.getEnabled()));
     }
 }
