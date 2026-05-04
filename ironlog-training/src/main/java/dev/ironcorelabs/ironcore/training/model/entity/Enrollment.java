@@ -2,9 +2,13 @@ package dev.ironcorelabs.ironcore.training.model.entity;
 
 import dev.ironcorelabs.ironlog.core.model.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Entity
 @Table(name = "enrollment", schema = "training")
 public class Enrollment extends BaseEntity {

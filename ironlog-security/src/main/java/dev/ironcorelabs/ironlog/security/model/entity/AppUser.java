@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -34,6 +35,12 @@ public class AppUser extends BaseEntity {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    
+    @Column(name = "birthday")
+    private LocalDate birthday;
+
+    @Column(name = "location")
+    private String location;
 
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @CollectionTable(

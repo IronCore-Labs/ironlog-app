@@ -1,17 +1,14 @@
 package dev.ironcorelabs.ironcore.training.model.entity;
 
 import dev.ironcorelabs.ironlog.core.model.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,12 +20,6 @@ public class Client extends BaseEntity {
 
     @Id
     private Long id;
-
-    @Column(name = "birthday")
-    private LocalDate birthday;
-
-    @Column(name = "location")
-    private String location;
 
     @Column(name = "need_registration", nullable = false)
     private Boolean needRegistration;
@@ -56,4 +47,7 @@ public class Client extends BaseEntity {
 
     @Column(name = "observations")
     private String observations;
+
+    @OneToMany(mappedBy = "client")
+    private List<Enrollment> enrollments;
 }

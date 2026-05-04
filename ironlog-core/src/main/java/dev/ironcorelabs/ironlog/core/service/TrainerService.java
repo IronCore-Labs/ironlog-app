@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.core.service;
 
+import dev.ironcorelabs.ironlog.core.dto.ClientDTO;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 
 import java.util.UUID;
@@ -7,15 +8,9 @@ import java.util.UUID;
 public interface TrainerService {
     TrainerDto update(Long id, UpdateMyTrainerProfileRequest request);
 
-    TrainerDto updateUnsafe(Long id, UpdateMyTrainerProfileRequest request);
-
     TrainerDto updateByExternalId(UUID id, UpdateMyTrainerProfileRequest request);
 
-    TrainerDto updateByExternalIdUnsafe(UUID id, UpdateMyTrainerProfileRequest request);
-
     TrainerDto create(RegisterTrainerRequest request);
-
-    TrainerDto createUnsafe(RegisterTrainerRequest request);
 
     TrainerDto findById(Long id);
 
@@ -27,11 +22,15 @@ public interface TrainerService {
 
     TrainerList findAll(int page, int size);
 
-    void promoteToTrainerDto(UUID id);
+    void promoteToTrainer(UUID id);
 
-    ClientList getMyAthletes(int page, int size);
+    void disableTrainer(UUID id);
 
-    Client registerAndEnroll(RegisterClientRequest request);
+    ClientList getMyAthletes(Long trainerId, int page, int size);
 
-    void enroll(UUID clientId);
+    ClientDTO registerAndEnroll(Long trainerId, RegisterClientRequest request);
+
+    void assignClientToTrainer(Long trainerId, UUID clientExtId);
+
+    void disableClientToTrainer(Long trainerId, UUID clientExtId);
 }

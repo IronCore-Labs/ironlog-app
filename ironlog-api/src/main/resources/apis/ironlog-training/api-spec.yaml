@@ -273,7 +273,7 @@ paths:
         id: x1nkzw5phu0tu
       requestBody:
         $ref: '#/components/requestBodies/UpdateClientRequest'
-  '/clients/{clientId}/user-data':
+  '/trainer/my-athletes/{clientId}':
     parameters:
       - schema:
           type: string
@@ -305,8 +305,6 @@ paths:
         $ref: '#/components/requestBodies/UpdateClientRequest'
     get:
       summary: Get client user data
-      tags:
-        - clients
       responses:
         '200':
           $ref: '#/components/responses/ClientResponse'
@@ -319,6 +317,8 @@ paths:
       operationId: getClientUserData
       x-stoplight:
         id: 1hge3hiv74hzf
+      tags:
+        - trainers
   '/trainers/{trainerId}/activate':
     parameters:
       - schema:
@@ -430,7 +430,22 @@ paths:
       operationId: assign
       x-stoplight:
         id: i957ujumds9ex
-  '/trainer/my-athletes/{clientId}':
+    delete:
+      summary: Delete client for trainer
+      tags: []
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: delete
+      x-stoplight:
+        id: dghsx0v98nu69
+  '/trainer/my-athletes/{clientId}/assign':
     parameters:
       - schema:
           type: string
@@ -471,16 +486,11 @@ paths:
       operationId: deactivate
       x-stoplight:
         id: hd45e9m0uok02
-  '/trainer/{id}/status':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
+  /clients/me/deactivate:
     patch:
-      summary: Change trainer status
-      tags: []
+      summary: Deactivate my profile
+      tags:
+        - clients
       responses:
         '204':
           description: No Content
@@ -490,11 +500,9 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '404':
           $ref: '#/components/responses/ErrorResponse'
-      operationId: changeTrainerStatus
+      operationId: deactivateClientProfile
       x-stoplight:
-        id: zzhxudo7imwkp
-      requestBody:
-        $ref: '#/components/requestBodies/ChangeStatusRequest'
+        id: 4qzf2va46tc6d
 components:
   schemas:
     TrainerDto:
@@ -540,7 +548,7 @@ components:
         - pageNumber
         - pageSize
         - totalElements
-        - totalPage
+        - totalPages
         - first
         - last
       properties:
@@ -562,7 +570,7 @@ components:
           type: integer
           x-stoplight:
             id: 35cczdkrsez5y
-        totalPage:
+        totalPages:
           type: integer
           x-stoplight:
             id: l5b6w85q95vyd
@@ -574,8 +582,9 @@ components:
           type: boolean
           x-stoplight:
             id: q0bqyuap5uc0d
-    Client:
-      title: Client
+      description: ''
+    ClientDto:
+      title: ClientDto
       x-stoplight:
         id: vzia7bnzqizht
       type: object
@@ -653,7 +662,7 @@ components:
           x-stoplight:
             id: wo2ntp1udzy3f
           items:
-            $ref: '#/components/schemas/Client'
+            $ref: '#/components/schemas/ClientDto'
         pageNumber:
           type: integer
           x-stoplight:
@@ -702,7 +711,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Client'
+            $ref: '#/components/schemas/ClientDto'
     ClientListResponse:
       description: Example response
       content:
@@ -716,20 +725,9 @@ components:
           schema:
             type: object
             required:
-              - birthday
-              - location
               - speciality
               - experienceYears
             properties:
-              birthday:
-                type: string
-                x-stoplight:
-                  id: kdi4ey460nid8
-                format: date
-              location:
-                type: string
-                x-stoplight:
-                  id: 2eiyznj0fjt3k
               speciality:
                 type: string
                 x-stoplight:
@@ -750,15 +748,6 @@ components:
             required:
               - userData
             properties:
-              birthday:
-                type: string
-                x-stoplight:
-                  id: 1zux7wrtdbavv
-                format: date
-              location:
-                type: string
-                x-stoplight:
-                  id: qwuc1i6dcu1hm
               userData:
                 $ref: ../ironlog-security/api-spec.yaml#/components/schemas/UserBaseRequest
               speciality:
@@ -781,15 +770,6 @@ components:
             required:
               - userData
             properties:
-              birthday:
-                type: string
-                x-stoplight:
-                  id: z0dszj57augbf
-                format: date
-              location:
-                type: string
-                x-stoplight:
-                  id: pn7s9ayh5h5xq
               weight:
                 type: number
                 x-stoplight:
@@ -830,21 +810,10 @@ components:
           schema:
             type: object
             required:
-              - birthday
-              - location
               - weight
               - height
               - hasSurgeries
             properties:
-              birthday:
-                type: string
-                x-stoplight:
-                  id: 2qrmhm1ujkz1u
-                format: date
-              location:
-                type: string
-                x-stoplight:
-                  id: poc5zu2t4l9j3
               weight:
                 type: number
                 x-stoplight:

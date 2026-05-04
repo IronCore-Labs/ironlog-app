@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.security.mapper;
 
+import dev.ironcorelabs.ironlog.core.dto.UserDTO;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.dto.CustomGrantedAuthority;
 import dev.ironcorelabs.ironlog.security.dto.UserDetailsCustom;
@@ -23,9 +24,9 @@ public interface UserMapper {
         return permissions.stream().map(UserRole::getValue).map(CustomGrantedAuthority::new).toList();
     }
 
-    User toDto(AppUser user);
+    UserDTO toDto(AppUser user);
 
-    List<User> toDto(List<AppUser> users);
+    List<UserDTO> toDto(List<AppUser> users);
 
     default UserRoleEnum toDto(UserRole entity) {
         if (entity == null)
@@ -44,7 +45,7 @@ public interface UserMapper {
                 .totalPages(page.getTotalPages())
                 .pageSize(page.getSize())
                 .totalElements((int) page.getTotalElements())
-                .content(toDto(page.getContent()));
+                .content(toDto(page.getContent()).stream().map(user -> (User) user).toList());
     }
 
     @Mapping(ignore = true, target = "id")

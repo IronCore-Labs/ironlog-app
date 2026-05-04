@@ -1,4 +1,4 @@
-package dev.ironcorelabs.ironcore.training;
+package dev.ironcorelabs.ironcore.training.mapper;
 
 import dev.ironcorelabs.ironcore.training.model.entity.Trainer;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.RegisterTrainerRequest;
@@ -23,7 +23,7 @@ public interface TrainerMapper {
                 .first(page.isFirst())
                 .last(page.isLast())
                 .pageNumber(page.getNumber())
-                .totalPage(page.getTotalPages())
+                .totalPages(page.getTotalPages())
                 .pageSize(page.getSize())
                 .totalElements((int) page.getTotalElements())
                 .content(toDto(page.getContent()));

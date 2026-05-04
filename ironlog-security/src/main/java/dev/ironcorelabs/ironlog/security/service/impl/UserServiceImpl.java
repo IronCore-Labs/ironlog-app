@@ -1,9 +1,9 @@
 package dev.ironcorelabs.ironlog.security.service.impl;
 
+import dev.ironcorelabs.ironlog.core.dto.UserDTO;
 import dev.ironcorelabs.ironlog.core.event.UserStatusEvent;
-import dev.ironcorelabs.ironlog.core.exception.AccessDeniedException;
 import dev.ironcorelabs.ironlog.core.exception.RecordNotFoundException;
-import dev.ironcorelabs.ironlog.core.security.SecurityUtils;
+import dev.ironcorelabs.ironlog.core.service.InternalUserService;
 import dev.ironcorelabs.ironlog.core.service.UserService;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 import dev.ironcorelabs.ironlog.security.exception.BadCredentialsException;
@@ -27,29 +27,28 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements InternalUserService, UserService {
 
     private final UserRepository repository;
     private final UserMapper mapper;
     private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
-    private final SecurityUtils securityUtils;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public User findById(Long id) {
+    public UserDTO findById(Long id) {
         return mapper.toDto(repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found")));
     }
 
     @Override
-    public User findByExternalId(UUID externalId) {
+    public UserDTO findByExternalId(UUID externalId) {
         return mapper.toDto(repository.findByExternalId(externalId)
                 .orElseThrow(() -> new RecordNotFoundException("not.found")));
     }
 
     @Override
-    public User findByEmail(String email) {
+    public UserDTO findByEmail(String email) {
         return mapper.toDto(repository.findByEmail(email)
                 .orElseThrow(() -> new RecordNotFoundException("not.found")));
     }
@@ -57,17 +56,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @PreAuthorize("@sec.isAdmin()")
-    public User create(UserBaseRequest request) {
-        return createUnsafe(request, UserRoleEnum.ADMIN);
+    public UserDTO create(UserBaseRequest request) {
+        return createUnsafe(request, UserRoleEnum.ADMIN, needRegistration(request));
     }
 
     @Override
     @Transactional
-    public User createUnsafe(UserBaseRequest request, UserRoleEnum role) {
+    public UserDTO createUnsafe(UserBaseRequest request, UserRoleEnum role, Boolean needRegistration) {
         final AppUser user = mapper.toEntity(request);
         user.setRoles(List.of(mapper.toEntity(role)));
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setNeedRegistration(true);
+        user.setNeedRegistration(needRegistration);
 
         return mapper.toDto(repository.save(user));
     }
@@ -95,20 +94,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
-    public User update(Long id, UpdateUserRequest request) {
+    public UserDTO update(Long id, UpdateUserRequest request) {
         return updateUnsafe(id, request);
     }
 
     @Override
     @Transactional
     @PreAuthorize("@sec.isOwnerOrAdmin(#id)")
-    public User updateByExternalId(UUID id, UpdateUserRequest request) {
+    public UserDTO updateByExternalId(UUID id, UpdateUserRequest request) {
         return updateUnsafeByExternalId(id, request);
     }
 
     @Override
     @Transactional
-    public User updateUnsafe(Long id, UpdateUserRequest request) {
+    public UserDTO updateUnsafe(Long id, UpdateUserRequest request) {
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
@@ -117,14 +116,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUnsafeByExternalId(UUID id, UpdateUserRequest request) {
+    public UserDTO updateUnsafeByExternalId(UUID id, UpdateUserRequest request) {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
         return update(user, request);
     }
 
-    private User update(AppUser user, UpdateUserRequest request) {
+    private UserDTO update(AppUser user, UpdateUserRequest request) {
         mapper.updateEntity(request, user);
 
         if (user.getNeedRegistration())
@@ -137,7 +136,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PreAuthorize("@sec.isAdmin()")
-    public List<User> findAll() {
+    public List<UserDTO> findAll() {
         return repository.findAll().stream().map(mapper::toDto).toList();
     }
 
@@ -215,29 +214,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @PreAuthorize("@sec.isAdmin()")
     public void addRole(UUID id, UserRoleEnum role) {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
-        final UserRole entityRole = mapper.toEntity(role);
-
-        if (user.getRoles().stream().anyMatch(entityRole::equals))
-        {
-            return ;
-        }
-
-        user.addRole(entityRole);
-        repository.save(user);
+        addRole(user, role);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("@sec.isAdmin()")
     public void revokeRole(UUID id, UserRoleEnum role) {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
+        revokeRole(user, role);
+    }
+
+    @Override
+    @Transactional
+    public void addRole(Long id, UserRoleEnum role) {
+        final AppUser user = repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        addRole(user, role);
+    }
+
+    @Override
+    @Transactional
+    public void revokeRole(Long id, UserRoleEnum role) {
+        final AppUser user = repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+
+        revokeRole(user, role);
+    }
+
+    protected void revokeRole(AppUser user, UserRoleEnum role) {
         final UserRole entityRole = mapper.toEntity(role);
 
         if (user.getRoles().stream().noneMatch(entityRole::equals))
@@ -246,17 +257,27 @@ public class UserServiceImpl implements UserService {
         }
 
         user.revokeRole(entityRole);
+
+        if (user.getRoles().isEmpty())
+        {
+            user.setEnabled(false);
+        }
+
         repository.save(user);
     }
 
-    @Override
-    @Transactional
-    @PreAuthorize("@sec.isAdmin()")
-    public void changeStatus(UUID id, ChangeStatusRequest request) {
-        final AppUser user = repository.findByExternalId(id)
-                .orElseThrow(() -> new RecordNotFoundException("not.found"));
+    protected void addRole(AppUser user, UserRoleEnum role) {
+        final UserRole entityRole = mapper.toEntity(role);
 
-        changeStatus(user, request);
+        if (user.getRoles().stream().anyMatch(entityRole::equals))
+        {
+            return ;
+        }
+
+        user.addRole(entityRole);
+        user.setEnabled(true);
+
+        repository.save(user);
     }
 
     @Override
@@ -266,7 +287,7 @@ public class UserServiceImpl implements UserService {
         final AppUser user = repository.findByExternalId(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
-        changeStatus(user, new ChangeStatusRequest().status(RecordStatus.INACTIVE));
+        setEnabled(user, false);
     }
 
     @Override
@@ -275,11 +296,11 @@ public class UserServiceImpl implements UserService {
         final AppUser user = repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("not.found"));
 
-        changeStatus(user, new ChangeStatusRequest().status(RecordStatus.INACTIVE));
+        setEnabled(user, false);
     }
 
-    private void changeStatus(AppUser user, ChangeStatusRequest request) {
-        user.setEnabled(request.getStatus().equals(RecordStatus.ACTIVE));
+    protected void setEnabled(AppUser user, boolean enabled) {
+        user.setEnabled(enabled);
         repository.save(user);
 
         eventPublisher.publishEvent(new UserStatusEvent(this, user.getId(), user.getEnabled()));

@@ -1,5 +1,6 @@
 package dev.ironcorelabs.ironlog.core.service;
 
+import dev.ironcorelabs.ironlog.core.dto.UserDTO;
 import dev.ironcorelabs.ironlog.restapi.openapi.model.*;
 
 import java.util.List;
@@ -7,29 +8,23 @@ import java.util.UUID;
 
 public interface UserService {
 
-    User findById(Long id);
+    UserDTO findById(Long id);
 
-    User findByExternalId(UUID externalId);
+    UserDTO findByExternalId(UUID externalId);
 
-    User findByEmail(String email);
+    UserDTO findByEmail(String email);
 
-    User create(UserBaseRequest request);
-
-    User createUnsafe(UserBaseRequest request, UserRoleEnum role);
+    UserDTO create(UserBaseRequest request);
 
     void delete(Long id);
 
     void deleteByExternalId(UUID externalId);
 
-    User update(Long id, UpdateUserRequest request);
+    UserDTO update(Long id, UpdateUserRequest request);
 
-    User updateByExternalId(UUID id, UpdateUserRequest request);
+    UserDTO updateByExternalId(UUID id, UpdateUserRequest request);
 
-    User updateUnsafe(Long id, UpdateUserRequest request);
-
-    User updateUnsafeByExternalId(UUID id, UpdateUserRequest request);
-
-    List<User> findAll();
+    List<UserDTO> findAll();
 
     UserList findAll(int page, int size);
 
@@ -42,12 +37,6 @@ public interface UserService {
     void promoteToAdmin(UUID id);
 
     void revokeAdmin(UUID id);
-
-    void addRole(UUID id, UserRoleEnum role);
-
-    void revokeRole(UUID id, UserRoleEnum role);
-
-    void changeStatus(UUID id, ChangeStatusRequest request);
 
     void deactivateByUUID(UUID id);
 

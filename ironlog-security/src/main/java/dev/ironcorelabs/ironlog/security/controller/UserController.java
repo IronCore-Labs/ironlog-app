@@ -55,7 +55,7 @@ public class UserController implements UsersApi {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(UUID id) {
-        service.deleteByExternalId(id);
+        service.deactivateByUUID(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -82,18 +82,6 @@ public class UserController implements UsersApi {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> revokeAdmin(UUID userId) {
         service.revokeAdmin(userId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> changeStatus(UUID userId, ChangeStatusRequest changeStatusRequest) {
-        service.changeStatus(userId, changeStatusRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> deactivate() {
-        service.deactivate(utils.getCurrentUserId());
         return ResponseEntity.noContent().build();
     }
 }

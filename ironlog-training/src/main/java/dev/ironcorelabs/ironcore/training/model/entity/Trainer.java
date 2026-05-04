@@ -20,12 +20,6 @@ public class Trainer extends BaseEntity {
     @Id
     private Long id;
 
-    @Column(name = "birthday")
-    private LocalDate birthDay;
-
-    @Column(name = "location")
-    private String location;
-
     @Column(name = "need_registration", nullable = false)
     private Boolean needRegistration;
 

@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component("sec")
@@ -16,7 +17,13 @@ import java.util.UUID;
 public class SecurityUtilsImpl implements SecurityUtils {
 
     public Long getCurrentUserId() {
-        return getCurrentUserDetailAuthenticateUser().getId();
+        return getAuthenticatedDetails().getId();
+    }
+
+    // Método de control de acceso al Principal: La "Aduana Central"
+    private UserDetailsCustom getAuthenticatedDetails() {
+        return Optional.ofNullable(getCurrentUserDetailAuthenticateUser())
+                .orElseThrow(() -> new UnauthorizedException("session.invalid"));
     }
 
     public UserDetailsCustom getCurrentUserDetailAuthenticateUser() {
@@ -38,7 +45,7 @@ public class SecurityUtilsImpl implements SecurityUtils {
 
     @Override
     public UUID getExternalId() {
-        return getCurrentUserDetailAuthenticateUser().getExternalId();
+        return getAuthenticatedDetails().getExternalId();
     }
 
     @Override
@@ -51,10 +58,12 @@ public class SecurityUtilsImpl implements SecurityUtils {
             return false;
         }
 
+        String roleToCompare = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+
         return authentication.getAuthorities()
                 .stream()
                 .filter(auth -> auth.getAuthority() != null)
-                .anyMatch(auth -> auth.getAuthority().equals(role));
+                .anyMatch(auth -> auth.getAuthority().equals(roleToCompare));
     }
 
     private static final String ANONYMOUS_USER = "anonymousUser";

@@ -300,51 +300,6 @@ paths:
       operationId: revokeAdmin
       x-stoplight:
         id: jw16qfuqvj7v7
-  '/users/{userId}/status':
-    parameters:
-      - schema:
-          type: string
-          format: uuid
-        name: userId
-        in: path
-        required: true
-    patch:
-      summary: Change user status
-      tags:
-        - users
-      responses:
-        '204':
-          description: No Content
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '403':
-          $ref: '#/components/responses/ErrorResponse'
-        '404':
-          $ref: '#/components/responses/ErrorResponse'
-      operationId: changeStatus
-      x-stoplight:
-        id: rt3lhtx0qwbi9
-      requestBody:
-        $ref: '#/components/requestBodies/ChangeStatusRequest'
-  /users/me/deactivate:
-    patch:
-      summary: Change my status
-      tags:
-        - users
-      responses:
-        '204':
-          description: No Content
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '403':
-          $ref: '#/components/responses/ErrorResponse'
-        '404':
-          $ref: '#/components/responses/ErrorResponse'
-      operationId: deactivate
-      x-stoplight:
-        id: rc8vbix8sozw9
-        description: Shared Request
-    parameters: []
 components:
   schemas:
     User:
@@ -441,7 +396,6 @@ components:
         - firstName
         - email
         - password
-        - lastName
       properties:
         firstName:
           type: string
@@ -459,6 +413,15 @@ components:
           type: string
           x-stoplight:
             id: 0t4txtfr9q0uj
+        birthday:
+          type: string
+          x-stoplight:
+            id: ev9bnzwkrufjm
+          format: date
+        location:
+          type: string
+          x-stoplight:
+            id: vk0vx0y1vro9w
   requestBodies:
     RegisterUserRequest:
       content:
@@ -498,6 +461,8 @@ components:
               - firstName
               - email
               - lastName
+              - birthday
+              - location
             properties:
               firstName:
                 type: string
@@ -509,6 +474,15 @@ components:
                 type: string
                 x-stoplight:
                   id: ditq6l7na3ys5
+              birthday:
+                type: string
+                x-stoplight:
+                  id: jyznhftvwudp9
+                format: date
+              location:
+                type: string
+                x-stoplight:
+                  id: vtx52xzbt32f5
     CreateUserRequest:
       content:
         application/json:

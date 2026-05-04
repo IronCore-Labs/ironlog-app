@@ -47,5 +47,10 @@ public abstract class BaseEntity {
         {
             externalId = UUID.randomUUID();
         }
+
+        if (enabled == null)
+        {
+            enabled = true;
+        }
     }
 }
